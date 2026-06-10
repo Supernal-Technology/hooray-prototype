@@ -7,7 +7,7 @@ import {
   ChevronDown,
   Database,
   AlertTriangle,
-  Lightbulb,
+  Activity,
   X,
 } from 'lucide-react'
 import Portfolio from './views/Portfolio'
@@ -195,9 +195,9 @@ function Sidebar({ active, onNav, onPhase2, role, setRole }) {
           <NavItem label="Genome" icon={<Database size={16} aria-hidden="true" />} active={active === 'sources'} onClick={() => onNav('sources')} />
         </NavGroup>
 
-        <NavGroup label="Intelligence">
-          <NavItem label="Insights" icon={<Lightbulb size={16} aria-hidden="true" />} active={active === 'anomalies'} onClick={() => onNav('anomalies')} />
-          <NavItem label="Data Watchlist" icon={<AlertTriangle size={16} aria-hidden="true" />} active={active === 'signals'} onClick={() => onNav('signals')} />
+        <NavGroup label="Signals">
+          <NavItem label="Insights" icon={<AlertTriangle size={16} aria-hidden="true" />} active={active === 'anomalies'} onClick={() => onNav('anomalies')} />
+          <NavItem label="Anomalies" icon={<Activity size={16} aria-hidden="true" />} active={active === 'signals'} onClick={() => onNav('signals')} />
         </NavGroup>
 
         <NavGroup label="SAL">

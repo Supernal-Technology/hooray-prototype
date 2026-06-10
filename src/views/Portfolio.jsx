@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Search, X, ChevronRight, AlertTriangle, Lock, ArrowRight } from 'lucide-react'
-import { CLIENTS, getAM } from '../data/clients'
+import { CLIENTS } from '../data/clients'
+import { managerForClient } from '../data/people'
 import { reportForClient } from '../data/reports'
 import { LEADERSHIP } from '../data/leadership'
 import { CURRENT_PERIOD } from '../data/performance'
@@ -23,23 +24,27 @@ function anomalyCount(report) {
 export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase2 }) {
   const [query, setQuery] = useState('')
   const [activeClient, setActiveClient] = useState(null)
-  const { statusForClient } = useReports()
+  const { statusForClient, inScope, currentUser } = useReports()
+
+  // Account-access scope: directors see only their book; partners see all.
+  const scopedClients = useMemo(() => CLIENTS.filter((c) => inScope(c.id)), [inScope])
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim()
-    if (!q) return CLIENTS
-    return CLIENTS.filter((c) => {
-      const amName = getAM(c.amId)?.name?.toLowerCase() || ''
+    if (!q) return scopedClients
+    return scopedClients.filter((c) => {
+      const amName = managerForClient(c.id)?.name?.toLowerCase() || ''
       return (
         c.name.toLowerCase().includes(q) ||
         c.collection.toLowerCase().includes(q) ||
         amName.includes(q)
       )
     })
-  }, [query])
+  }, [query, scopedClients])
 
+  const tier = (t) => scopedClients.filter((c) => c.tier === t).length
   const portfolioKPIs = [
-    { label: 'Active clients', value: String(LEADERSHIP.portfolioHealth.totalClients), deltaSub: `${LEADERSHIP.portfolioHealth.tier1} T1 · ${LEADERSHIP.portfolioHealth.tier2} T2 · ${LEADERSHIP.portfolioHealth.tier3} T3` },
+    { label: 'Active clients', value: String(scopedClients.length), deltaSub: `${tier(1)} T1 · ${tier(2)} T2 · ${tier(3)} T3` },
     { label: 'On-time delivery (MTD)', value: `${Math.round(LEADERSHIP.reporting.onTimePct.value * 100)}%`, delta: '+2pp', deltaSub: 'vs 90% prior cycle' },
     { label: 'Anomalies this cycle', value: String(LEADERSHIP.reporting.anomaliesCaught.mtd), delta: '+2', deltaSub: `${LEADERSHIP.reporting.anomaliesCaught.mtd} flagged · awaiting AM review`, anomaly: true },
     { label: 'Equivalent hours recovered', value: String(LEADERSHIP.equivalentHumanHours.mtd), delta: LEADERSHIP.equivalentHumanHours.delta, deltaSub: 'MTD' },
@@ -51,7 +56,11 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
         <div>
           <div className="eyebrow mb-2">Hooray roster</div>
           <h1 className="text-3xl font-serif font-medium tracking-tight text-ink">Portfolio</h1>
-          <p className="text-sm text-ink-3 mt-1">{CLIENTS.length} hotel clients across the Hooray roster. Click a row to inspect.</p>
+          <p className="text-sm text-ink-3 mt-1">
+            {currentUser?.scope === 'all'
+              ? `${scopedClients.length} client accounts across the Hooray roster. Click a row to inspect.`
+              : `${scopedClients.length} accounts you manage. Click a row to inspect.`}
+          </p>
         </div>
         <div className="relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ghost" aria-hidden="true" />
@@ -66,7 +75,7 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
         </div>
       </header>
 
-      <div className="eyebrow mb-3">Account health monitoring</div>
+      <div className="eyebrow mb-3">Pulse · account health monitoring</div>
       <div className="grid grid-cols-4 gap-4 mb-8">
         {portfolioKPIs.map((k) => <KPI key={k.label} {...k} />)}
       </div>
@@ -80,7 +89,7 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
           <span></span>
         </div>
         {filtered.map((c) => {
-          const am = getAM(c.amId)
+          const am = managerForClient(c.id)
           const report = reportForClient(c.id, CURRENT_PERIOD)
           const liveStatus = statusForClient(c.id, CURRENT_PERIOD)
           const status = liveStatus ?? (c.compliance === 'pending' ? 'pending' : 'drafting')
@@ -106,7 +115,7 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
                 </div>
               </div>
               <div className="text-sm text-ink-3 truncate">{am?.name}</div>
-              <div>{c.tier ? <TierBadge tier={c.tier} withLabel /> : <span className="text-ink-3 font-mono text-xs">—</span>}</div>
+              <div>{c.tier ? <TierBadge tier={c.tier} withLabel /> : <span className="text-ink-3 font-mono text-xs">, </span>}</div>
               <div className="flex items-center gap-2 flex-wrap">
                 <StatusPill status={status} />
               </div>
@@ -116,7 +125,7 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
         })}
         {filtered.length === 0 && (
           <div className="px-5 py-10 text-center text-sm text-ink-3">
-            No clients match “{query}”. Try a hotel name, collection, or account manager — or clear the search to see all {CLIENTS.length}.
+            No clients match “{query}”. Try a hotel name, collection, or account manager, or clear the search to see all {CLIENTS.length}.
           </div>
         )}
       </div>
@@ -130,8 +139,8 @@ export default function Portfolio({ onOpenReport, onOpenAskSal, onToast, onPhase
           <Lock size={16} className="text-ink-3" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium text-ink">SAL Expands — Creative Request Intelligence</div>
-          <div className="text-xs text-ink-3 mt-0.5">Phase 2 turns SAL into a full AI employee. Preview what's next.</div>
+          <div className="text-sm font-medium text-ink">SAL Expands: From Reporting to Strategy</div>
+          <div className="text-xs text-ink-3 mt-0.5">Phase 2: richer signal, deeper strategy, client self-serve. Preview what's next.</div>
         </div>
         <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-dark flex-shrink-0">
           Preview <ArrowRight size={12} aria-hidden="true" />
@@ -162,7 +171,7 @@ const SOURCE_CONDITION = {
 }
 
 function ClientDrawer({ client, onClose, onOpenReport, onOpenAskSal, onToast }) {
-  const am = getAM(client.amId)
+  const am = managerForClient(client.id)
   const report = reportForClient(client.id, CURRENT_PERIOD)
   const sources = SOURCES.filter((s) => s.clientId === client.id)
   const { statusForClient, stateForClient } = useReports()
@@ -185,7 +194,7 @@ function ClientDrawer({ client, onClose, onOpenReport, onOpenAskSal, onToast }) 
   const isDelivered = status === 'delivered'
 
   return (
-    <div className="fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label={`${client.name} detail`}>
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`${client.name} detail`}>
       <div className="absolute inset-0 bg-ink/30" onClick={onClose} aria-hidden="true" />
       <div className="absolute right-0 top-0 bottom-0 w-[440px] bg-card border-l border-hairline overflow-y-auto animate-slide-up">
         <header className="sticky top-0 bg-card border-b border-hairline px-6 py-4 flex items-start justify-between gap-3 z-10">
@@ -276,7 +285,7 @@ function ClientDrawer({ client, onClose, onOpenReport, onOpenAskSal, onToast }) 
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
-              placeholder="Add context SAL should weigh — seasonality, account priorities, things to watch"
+              placeholder="Add context SAL should weigh, seasonality, account priorities, things to watch"
               aria-label="Context note for SAL"
               className="input w-full"
             />

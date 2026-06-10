@@ -7,7 +7,8 @@
 // job. The UX (states, attribution, success-gated toasts) is faithful to spec.
 
 import { createContext, useContext, useState, useRef, useCallback, useMemo } from 'react'
-import { REPORTS, reportForClient } from '../data/reports'
+import { REPORTS, reportForClient, getReport } from '../data/reports'
+import { personSeesClient } from '../data/people'
 
 const ReportsContext = createContext(null)
 
@@ -106,13 +107,18 @@ export function ReportsProvider({ currentUser, onToast, children }) {
         const rep = reportForClient(clientId, period)
         return rep ? states[rep.id] ?? null : null
       },
-      // Count of reports still needing AM attention (queue badge).
+      // Account-access scoping for the logged-in person.
+      currentUser,
+      inScope: (clientId) => personSeesClient(currentUser, clientId),
+      // Count of in-scope reports still needing AM attention (queue badge).
       pendingCount: () =>
-        Object.values(states).filter((s) =>
-          ['ready_for_review', 'in_review', 'drafting'].includes(s.status)
+        Object.entries(states).filter(
+          ([id, s]) =>
+            ['ready_for_review', 'in_review', 'drafting'].includes(s.status) &&
+            personSeesClient(currentUser, getReport(id)?.clientId)
         ).length,
     }),
-    [states, signOff, sendBack, saveEdits]
+    [states, signOff, sendBack, saveEdits, currentUser]
   )
 
   return <ReportsContext.Provider value={value}>{children}</ReportsContext.Provider>

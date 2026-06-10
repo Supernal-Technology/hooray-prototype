@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AlertTriangle, CheckCircle2, ThumbsUp, ThumbsDown, MessageCircle } from 'lucide-react'
 import { SIGNALS } from '../data/signals'
-import { getAM } from '../data/clients'
+import { managerForClient } from '../data/people'
 import { getPlatform, sourcesForClient } from '../data/sources'
 import KPI from './KPI'
 import TierBadge from './TierBadge'
@@ -34,7 +34,7 @@ export default function ReportArticle({
   onAskAbout,
   onFeedback,
 }) {
-  const am = getAM(client.amId)
+  const am = managerForClient(client.id)
   const isClient = mode === 'client'
   const readFor = (p) => edits[p.platformId] ?? state.edits?.[p.platformId] ?? p.read
   const hasEdits = Object.keys(state.edits || {}).length > 0
@@ -182,7 +182,7 @@ function ReadFeedback({ target, onFeedback }) {
   const [vote, setVote] = useState(null)
   const [note, setNote] = useState('')
   const [done, setDone] = useState(false)
-  if (done) return <div className="mt-2 text-[11px] text-accent-dark">Feedback logged — SAL weights this on the next draft.</div>
+  if (done) return <div className="mt-2 text-[11px] text-accent-dark">Feedback logged, SAL weights this on the next draft.</div>
   return (
     <div className="mt-2 flex items-center gap-2 flex-wrap">
       <span className="text-[10px] uppercase tracking-wide text-ghost">Train SAL</span>
@@ -223,7 +223,7 @@ export function AnomalyChip({ anomalies }) {
                 </span>
               )}
               {s.narrative}
-              {positive && <span className="block mt-1 text-accent-dark">Positive break — flagged so the gain is attributed correctly, not so it reads as a problem.</span>}
+              {positive && <span className="block mt-1 text-accent-dark">Positive break, flagged so the gain is attributed correctly, not so it reads as a problem.</span>}
             </span>
           )
         })}
@@ -262,8 +262,8 @@ function Section({ number, title, subtitle, children }) {
   )
 }
 
-function fmtTime(iso) { return iso ? new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—' }
-function fmtDay(iso) { return iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—' }
+function fmtTime(iso) { return iso ? new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ', ' }
+function fmtDay(iso) { return iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ', ' }
 function fmtPeriod(period) { const [y, m] = period.split('-').map(Number); return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }
 function dataThrough(period) { const [y, m] = period.split('-').map(Number); return new Date(y, m, 0).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }
 function fmtSeriesEnd(s) { const v = s.at(-1); return typeof v === 'number' && v < 100 ? v.toFixed(1) : Math.round(v).toLocaleString() }

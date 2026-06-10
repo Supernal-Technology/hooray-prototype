@@ -13,14 +13,14 @@ export const PLATFORMS = {
 
 // Status: connected | delegated-pending | csv-manual | csv-missing | disconnected
 export const SOURCES = [
-  // Salamander — full Tier 1 stack
+  // Salamander, full Tier 1 stack
   { clientId: 'salamander', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'salamander', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'salamander', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'salamander', platformId: 'trade-desk', tier: 3, status: 'csv-manual', dataAsOf: '2026-06-04T09:14Z' },
   { clientId: 'salamander', platformId: 'gws', tier: 1, status: 'connected', dataAsOf: '2026-06-09T07:00Z' },
 
-  // Resorts World — high spend
+  // Resorts World, high spend
   { clientId: 'resorts-world', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'resorts-world', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'resorts-world', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
@@ -37,7 +37,7 @@ export const SOURCES = [
   { clientId: 'aqua-aston', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'aqua-aston', platformId: 'revinate', tier: 2, status: 'delegated-pending', dataAsOf: null },
 
-  // Marcus / Pfister — Tier 3 with missing CSV (honest about missing data)
+  // Marcus / Pfister, Tier 3 with missing CSV (honest about missing data)
   { clientId: 'marcus-pfister', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'marcus-pfister', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'marcus-pfister', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
@@ -53,17 +53,17 @@ export const SOURCES = [
   { clientId: 'balboa-bay', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'balboa-bay', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
 
-  // Alila Ventana Big Sur — Tier 2 via Revinate
+  // Alila Ventana Big Sur, Tier 2 via Revinate
   { clientId: 'alila-ventana', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'alila-ventana', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'alila-ventana', platformId: 'revinate', tier: 2, status: 'connected', dataAsOf: '2026-06-08T16:30Z' },
 
-  // The Guild — pending compliance
+  // The Guild, pending compliance
   { clientId: 'the-guild', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'the-guild', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'the-guild', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
 
-  // Mauna Kea — Tier 2 via Revinate + Cendyn
+  // Mauna Kea, Tier 2 via Revinate + Cendyn
   { clientId: 'mauna-kea', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'mauna-kea', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'mauna-kea', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },

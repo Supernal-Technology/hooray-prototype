@@ -27,17 +27,32 @@ function reportKind(report, state, client) {
 }
 
 export default function ReportApprovals({ initialReportId, onOpenAskSal, onToast }) {
-  const { states, getState, signOff, sendBack, saveEdits } = useReports()
+  const { states, getState, signOff, sendBack, saveEdits, inScope } = useReports()
+
+  // Only reports for accounts this person manages.
+  const scopedReports = useMemo(() => REPORTS.filter((r) => inScope(r.clientId)), [inScope])
+
   const [selectedId, setSelectedId] = useState(
-    initialReportId || REPORTS.find((r) => r.status === 'ready_for_review')?.id || REPORTS[0].id
+    initialReportId || scopedReports.find((r) => r.status === 'ready_for_review')?.id || scopedReports[0]?.id
   )
 
   useEffect(() => { if (initialReportId) setSelectedId(initialReportId) }, [initialReportId])
 
+  // If the selected report falls outside the current person's scope (after a
+  // "View as" switch), snap to their first report.
+  useEffect(() => {
+    if (!scopedReports.some((r) => r.id === selectedId)) {
+      setSelectedId(scopedReports.find((r) => r.status === 'ready_for_review')?.id || scopedReports[0]?.id)
+    }
+  }, [scopedReports]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const ordered = useMemo(() => {
     const order = ['ready_for_review', 'in_review', 'drafting', 'signed_off', 'delivered']
-    return [...REPORTS].sort((a, b) => order.indexOf(states[a.id].status) - order.indexOf(states[b.id].status))
-  }, [states])
+    return [...scopedReports].sort((a, b) => order.indexOf(states[a.id].status) - order.indexOf(states[b.id].status))
+  }, [states, scopedReports])
+
+  // Matches the sidebar badge exactly (scope + same statuses).
+  const pending = scopedReports.filter((r) => ['ready_for_review', 'in_review', 'drafting'].includes(states[r.id].status)).length
 
   const selected = getReport(selectedId)
   const selectedState = getState(selectedId)
@@ -50,13 +65,13 @@ export default function ReportApprovals({ initialReportId, onOpenAskSal, onToast
     <div className="animate-fade-up">
       <header className="mb-8">
         <div className="eyebrow mb-2">This cycle</div>
-        <h1 className="text-2xl font-serif font-medium tracking-tight text-ink">Report Approvals</h1>
-        <p className="text-sm text-ink-3 mt-1">Day-3 of the month is the on-time target. Review, train, and approve — SAL holds until you sign off.</p>
+        <h1 className="text-2xl font-serif font-medium tracking-tight text-ink">Reporting</h1>
+        <p className="text-sm text-ink-3 mt-1">Day-3 of the month is the on-time target. Review, train, and approve, SAL holds until you sign off.</p>
       </header>
 
       <div className="grid grid-cols-[300px_1fr] gap-6 items-start">
         <aside className="card overflow-hidden flex flex-col max-h-[calc(100vh-220px)]">
-          <div className="px-4 py-2.5 border-b border-hairline bg-muted eyebrow">Queue · {REPORTS.length} reports</div>
+          <div className="px-4 py-2.5 border-b border-hairline bg-muted eyebrow">{pending} awaiting you · {scopedReports.length} total</div>
           <div className="overflow-y-auto flex-1">
             {ordered.map((r) => {
               const c = getClient(r.clientId)
@@ -159,7 +174,7 @@ function DraftingPanel({ report, state, client }) {
           ))}
         </div>
       </div>
-      <p className="text-[11px] text-ink-3 mt-6">No actions yet — nothing to approve until SAL finishes drafting.</p>
+      <p className="text-[11px] text-ink-3 mt-6">No actions yet, nothing to approve until SAL finishes drafting.</p>
     </article>
   )
 }
@@ -191,16 +206,16 @@ function ExclusionPanel({ report, client, onToast, onOpenAskSal }) {
           <AlertTriangle size={18} className="text-amber mt-0.5 flex-shrink-0" aria-hidden="true" />
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-amber-text">
-              {isCompliance ? 'Held for compliance — not publishing' : `${platformName} missing — not publishing a partial report`}
+              {isCompliance ? 'Held for compliance, not publishing' : `${platformName} missing, not publishing a partial report`}
             </h3>
             <p className="text-sm text-amber-text/90 mt-2 leading-relaxed max-w-prose">
               {isCompliance
-                ? 'Contract compliance is still pending for this client. I will not draft or deliver an AI-assisted report until it clears — delivering now would be out of scope.'
+                ? 'Contract compliance is still pending for this client. I will not draft or deliver an AI-assisted report until it clears, delivering now would be out of scope.'
                 : missingSig?.narrative}
             </p>
             {!isCompliance && (
               <p className="text-sm text-amber-text/90 mt-2 leading-relaxed max-w-prose">
-                Publishing without it would misstate the share of media mix — the programmatic line is a real slice of spend, and a report that silently drops it reads as complete when it isn't.
+                Publishing without it would misstate the share of media mix, the programmatic line is a real slice of spend, and a report that silently drops it reads as complete when it isn't.
               </p>
             )}
           </div>
@@ -262,7 +277,7 @@ function ReportDocument({ report, state, client, onSignOff, onSendBack, onSaveEd
           </div>
           {isDelivered ? (
             <span className="text-[11px] text-ink-3 font-mono inline-flex items-center gap-1.5">
-              <CheckCircle2 size={13} className="text-accent-dark" aria-hidden="true" /> Delivered — signed off by {state.signedOff?.by}
+              <CheckCircle2 size={13} className="text-accent-dark" aria-hidden="true" /> Delivered, signed off by {state.signedOff?.by}
             </span>
           ) : isInteractive ? (
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -279,13 +294,13 @@ function ReportDocument({ report, state, client, onSignOff, onSendBack, onSaveEd
 
         {showNotes && (
           <div className="card mt-2 p-4 animate-fade-up">
-            <label className="eyebrow mb-2 block">Train SAL — what should change?</label>
+            <label className="eyebrow mb-2 block">Train SAL, what should change?</label>
             <textarea
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               rows={3}
               autoFocus
-              placeholder="e.g. The Meta read buries the lede — lead with the prospecting window, and soften the ROAS framing."
+              placeholder="e.g. The Meta read buries the lede, lead with the prospecting window, and soften the ROAS framing."
               className="input w-full"
             />
             <p className="text-[11px] text-ink-3 mt-1.5">SAL revises this draft and weights your guidance on future reports.</p>

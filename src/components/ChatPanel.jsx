@@ -4,7 +4,7 @@ import { CLIENT_CHAT, answerForPrompt, matchClientAnswer } from '../data/clientC
 import Chart from './Chart'
 import TierBadge from './TierBadge'
 
-// "Talk to this data" — the client-facing chat. This is the product, not a drawer.
+// "Talk to this data", the client-facing chat. This is the product, not a drawer.
 // Renders SAL answers as narrative + inline chart + sources, with a simulated
 // "Querying the Genome" state so the interaction reads as real. Scoped to one
 // client (Resorts World) via CLIENT_CHAT.
@@ -58,14 +58,14 @@ export default function ChatPanel({ askSignal }) {
           <h2 className="text-base font-serif font-semibold text-ink">Talk to this data</h2>
         </div>
         <p className="text-[11px] text-ink-3 mt-1 leading-snug">
-          Ask anything about your numbers — answers come from your connected sources only, always shown.
+          Ask anything about your numbers, answers come from your connected sources only, always shown.
         </p>
       </header>
 
       <div className="flex-1 overflow-y-auto p-5 space-y-4">
         {thread.length === 0 && (
           <div className="text-sm text-ink-2 leading-relaxed max-w-prose">
-            Hi — I'm SAL. I can pull up your paid media, RevPAR, ROAS, and channel spend, and explain
+            Hi, I'm SAL. I can pull up your paid media, RevPAR, ROAS, and channel spend, and explain
             anything that moved. Tap a question below or ask in your own words.
           </div>
         )}
@@ -113,6 +113,27 @@ export default function ChatPanel({ askSignal }) {
   )
 }
 
+// Confidence indicator on SAL's answers (Nick's high/med/low framing).
+// Stays on the ink/accent palette, amber is reserved for warnings, not low confidence.
+function ConfidenceTag({ level }) {
+  const meta = {
+    high: { label: 'High confidence', bars: 3, color: 'var(--accent-dark)' },
+    medium: { label: 'Medium confidence', bars: 2, color: 'var(--ink-3)' },
+    low: { label: 'Low confidence', bars: 1, color: 'var(--ghost)' },
+  }[level]
+  if (!meta) return null
+  return (
+    <div className="mt-2 inline-flex items-center gap-1.5">
+      <span className="flex items-end gap-0.5 h-3" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <span key={i} className="w-1 rounded-sm" style={{ height: `${(i + 1) * 4}px`, backgroundColor: i < meta.bars ? meta.color : 'var(--hairline-strong)' }} />
+        ))}
+      </span>
+      <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: meta.color }}>{meta.label}</span>
+    </div>
+  )
+}
+
 function UserBubble({ text }) {
   return (
     <div className="flex justify-end">
@@ -129,6 +150,8 @@ function SalAnswer({ answer }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm text-ink-2 leading-relaxed">{answer.narrative}</p>
+
+        {answer.confidence && <ConfidenceTag level={answer.confidence} />}
 
         {answer.chart && <div className="mt-3 rounded-card border border-hairline bg-card p-3"><Chart spec={answer.chart} /></div>}
 

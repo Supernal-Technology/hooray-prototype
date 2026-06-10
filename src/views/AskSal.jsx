@@ -4,7 +4,7 @@ import { ASK_SAL_PROMPTS } from '../data/askSal'
 import { getClient } from '../data/clients'
 import TierBadge from '../components/TierBadge'
 
-// Ask SAL — available two ways:
+// Ask SAL, available two ways:
 //   variant="dock": persistent right rail, open by default on every AM tab,
 //                   collapsible. The default way AMs chat with SAL.
 //   variant="full": the immersive, full-screen "Claude chat" experience,
@@ -45,7 +45,7 @@ export default function AskSal({ scopedClientId, onClose, onExpand, variant = 'd
     ask(text, {
       // [SIM] real app calls the query backend. Honest no-source fallback.
       narrative:
-        "I don't have a connected source that answers that yet. I can query Google Ads, Meta, GA4, and the connected CRM and programmatic feeds across the Hooray roster. Name a client and a metric — say \"Salamander paid search ROAS\" or \"which clients risk the day-3 window\" — and I'll pull it with sources.",
+        "I don't have a connected source that answers that yet. I can query Google Ads, Meta, GA4, and the connected CRM and programmatic feeds across the Hooray roster. Name a client and a metric, say \"Salamander paid search ROAS\" or \"which clients risk the day-3 window\", and I'll pull it with sources.",
       numbers: [], sources: [],
     })
   }
@@ -54,7 +54,7 @@ export default function AskSal({ scopedClientId, onClose, onExpand, variant = 'd
     <div className={`flex-1 overflow-y-auto ${isFull ? 'px-6 py-6' : 'p-5'} space-y-4`}>
       {thread.length === 0 && (
         <div className={`text-sm text-ink-2 leading-relaxed max-w-prose ${isFull ? 'mx-auto text-center pt-10' : ''}`}>
-          I read from your connected sources — Google Ads, Meta, GA4, and the connected CRM and
+          I read from your connected sources, Google Ads, Meta, GA4, and the connected CRM and
           programmatic feeds. Ask me about a client's performance, an anomaly, or the delivery
           pipeline, and I'll answer with the numbers and cite where they came from.
         </div>
@@ -104,7 +104,7 @@ export default function AskSal({ scopedClientId, onClose, onExpand, variant = 'd
           <h1 className="text-2xl font-serif font-medium tracking-tight text-ink flex items-center gap-2 mt-1">
             <Sparkles size={20} className="text-accent-dark" aria-hidden="true" /> Ask SAL
           </h1>
-          <p className="text-sm text-ink-3 mt-1 max-w-prose">Plain-language questions against the Genome — every connected client's data, with answers cited to source.</p>
+          <p className="text-sm text-ink-3 mt-1 max-w-prose">Plain-language questions against the Genome, every connected client's data, with answers cited to source.</p>
         </header>
         <div className="card flex-1 flex flex-col overflow-hidden p-0">
           {Thread}
@@ -126,7 +126,7 @@ export default function AskSal({ scopedClientId, onClose, onExpand, variant = 'd
               <h2 className="text-base font-serif font-semibold text-ink">Ask SAL</h2>
             </div>
             <p className="text-[11px] text-ink-3 mt-1 leading-snug">
-              Answers from the Genome — connected sources only, always shown.
+              Answers from the Genome, connected sources only, always shown.
               {scoped && <> Scoped to <span className="text-ink-2 font-medium">{scoped.name}</span>.</>}
             </p>
           </div>

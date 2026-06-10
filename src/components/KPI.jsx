@@ -11,7 +11,7 @@ export default function KPI({ label, value, delta, deltaSub, anomaly, missing })
       </div>
       <div className="mt-2 flex items-baseline gap-2 flex-wrap">
         <span className="font-serif font-medium text-ink text-[34px] leading-none tracking-tight">
-          {missing ? '—' : value}
+          {missing ? ', ' : value}
         </span>
         {!missing && delta && (
           <span className={`text-xs font-semibold ${negative ? 'text-amber-text' : isPositive ? 'text-accent-dark' : 'text-ink-3'}`}>

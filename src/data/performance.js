@@ -32,7 +32,7 @@ const SCENARIOS = {
     gads:  { spend: 9500, roas: 4.2, cpc: 2.35, conv: 145, impr: 720000, reach: 290000, drifts: [0, .02, .03, .01, .02, .03] },
     meta:  { spend: 5500, roas: 3.8, cpc: 1.90, conv: 95, impr: 580000, reach: 230000, drifts: [0, .01, .04, .02, .03, .02] },
     ga4:   { sessions: 92000, bookings: 580, drifts: [0, .02, .03, .04, .02, .02] },
-    // Trade Desk CSV not yet received — intentionally absent.
+    // Trade Desk CSV not yet received, intentionally absent.
   },
   timbers: {
     gads:  { spend: 18500, roas: 7.2, cpc: 1.85, conv: 240, impr: 920000, reach: 380000, drifts: [0, .04, .05, .02, .03, .04] },
@@ -46,7 +46,7 @@ const SCENARIOS = {
   },
   'alila-ventana': {
     gads:  { spend: 26000, roas: 8.1, cpc: 2.85, conv: 175, impr: 720000, reach: 295000, drifts: [0, .03, .02, .04, .06, .05] },
-    meta:  { spend: 0, roas: 0, cpc: 0, conv: 0, impr: 0, reach: 0, drifts: [0,0,0,0,0,0], note: 'Tier 2 — Meta managed by client' },
+    meta:  { spend: 0, roas: 0, cpc: 0, conv: 0, impr: 0, reach: 0, drifts: [0,0,0,0,0,0], note: 'Tier 2, Meta managed by client' },
     ga4:   { sessions: 48000, bookings: 165, drifts: [0, .02, .03, .04, .03, .03] },
   },
   'the-guild': {

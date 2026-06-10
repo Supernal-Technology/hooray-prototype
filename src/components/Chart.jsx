@@ -1,4 +1,4 @@
-// Inline SVG charts for Ask-SAL answers. No chart library — hand-rolled so the
+// Inline SVG charts for Ask-SAL answers. No chart library, hand-rolled so the
 // palette and type stay on the design system (accent / amber / ink only, serif
 // numerals, axis-minimal). Animated draw-in ≤300ms; honors prefers-reduced-motion
 // via the .chart-* keyframes in index.css.

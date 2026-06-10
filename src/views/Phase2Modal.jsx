@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 import { X, Lock, ArrowRight } from 'lucide-react'
 
 const STEPS = [
-  { num: 1, title: 'Intake', body: 'Account team forwards a vague creative request via email or Monday.com → SAL parses it into a structured ticket.' },
-  { num: 2, title: 'Classify & clarify', body: 'SAL detects the request type (landing page · social · ad · email) and asks the missing questions: audience, deadline, deliverables, brand constraints.' },
-  { num: 3, title: 'Package brief', body: 'A complete brief lands in Monday.com — ready for design or creative ops to start, with the open questions and answers logged in-thread.' },
+  { num: 1, title: 'Richer signal', body: 'SAL reads news, weather, and economic context, plus sources like the Smith Travel Report, so it can explain the why behind a number. "Traffic’s down because of the World Cup," not just "traffic’s down."' },
+  { num: 2, title: 'Deeper strategy', body: 'Beyond surfacing what moved, SAL recommends the next move to improve conversion and revenue, going three and four levels deep instead of two. The golden egg: strategy, not just reporting.' },
+  { num: 3, title: 'In your clients’ hands', body: 'Clients get their own access to talk to their data and act on it, with Pulse quantifying the account-team hours saved. Your AMs move from writing reports to strategy.' },
 ]
 
 export default function Phase2Modal({ onClose }) {
@@ -21,15 +21,15 @@ export default function Phase2Modal({ onClose }) {
           <div className="flex items-center gap-2.5">
             <Lock size={16} className="text-ink-3" />
             <div>
-              <div className="eyebrow">Phase 2 · coming next quarter</div>
-              <h2 className="text-xl font-serif font-semibold text-ink">SAL Expands — Creative Request Intelligence</h2>
+              <div className="eyebrow">Phase 2 · the next unlocks</div>
+              <h2 className="text-xl font-serif font-semibold text-ink">SAL Expands: From Reporting to Strategy</h2>
             </div>
           </div>
           <button onClick={onClose} className="text-ghost hover:text-ink-2"><X size={18} /></button>
         </div>
         <div className="px-6 py-5">
           <p className="text-sm text-ink-2 leading-relaxed mb-5 max-w-[68ch]">
-            Phase 2 turns SAL into a full AI employee. Vague creative requests arrive, SAL asks the missing questions, and a complete brief lands in Monday.com — ready for the design team to start. No reformatting, no clarifying calls.
+            Once the Genome and reporting are live, SAL grows the way a new hire would, taking on more of the world’s context and deeper strategic thinking. These directions are illustrative; we scope them with you once Phase 1 is delivering value.
           </p>
           <ol className="space-y-3">
             {STEPS.map((s) => (

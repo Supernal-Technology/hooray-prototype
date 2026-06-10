@@ -17,7 +17,7 @@ export const REPORTS = [
     onTimeTarget: '2026-06-03',
     sectionsSummary: 'Strong volume, soft unit economics. Meta open-window flagged. One Google Ads ROAS anomaly.',
     overview: {
-      narrative: 'Salamander delivered solid bookings volume in May. Google Ads efficiency softened — ROAS landed 18% below baseline — while Meta showed an upside window worth leaning into for the next 2–3 weeks.',
+      narrative: 'Salamander delivered solid bookings volume in May. Google Ads efficiency softened, ROAS landed 18% below baseline, while Meta showed an upside window worth leaning into for the next 2–3 weeks.',
       kpis: [
         { label: 'Total spend', value: '$50,500', deltaMoM: '+2%', vsBaseline: '+3%' },
         { label: 'Bookings', value: '1,841', deltaMoM: '+1%', vsBaseline: '+0%' },
@@ -27,8 +27,8 @@ export const REPORTS = [
     },
     platforms: [
       { platformId: 'gads', read: 'Google Ads ROAS dropped to 5.25x (baseline 6.4x). CPC on Middleburg-weddings rose 22%; conversions held but unit economics slipped.', anomalies: ['sig-001'] },
-      { platformId: 'meta', read: 'Meta prospecting ROAS climbed 9% MoM with no spend change. Top-of-funnel is open — a 2–3 week window to lean in.', anomalies: ['sig-002'] },
-      { platformId: 'ga4', read: 'Sessions +1% MoM, bookings +1%. Conversion rate held — the drop is on paid efficiency, not site performance.' },
+      { platformId: 'meta', read: 'Meta prospecting ROAS climbed 9% MoM with no spend change. Top-of-funnel is open, a 2–3 week window to lean in.', anomalies: ['sig-002'] },
+      { platformId: 'ga4', read: 'Sessions +1% MoM, bookings +1%. Conversion rate held, the drop is on paid efficiency, not site performance.' },
       { platformId: 'trade-desk', read: 'Programmatic spend on plan (CSV received June 4). No anomalies.' },
     ],
     trends: [
@@ -72,7 +72,7 @@ export const REPORTS = [
     ],
     recommendations: [
       { text: 'Lock the June convention-calendar spend at +5% over plan to ride the trend.', priority: 'medium' },
-      { text: 'Build a desktop-vs-mobile breakdown into next month\'s report — the crossover is worth a leadership read.', priority: 'low' },
+      { text: 'Build a desktop-vs-mobile breakdown into next month\'s report, the crossover is worth a leadership read.', priority: 'low' },
     ],
   },
   {
@@ -85,7 +85,7 @@ export const REPORTS = [
     onTimeTarget: '2026-06-03',
     sectionsSummary: 'Spring spike confirmed model; CPA crept up. Within target.',
     overview: {
-      narrative: 'Aqua Aston ran +14% spend in May driven by the Hawaii spring window. Bookings rose 10%, CPA 6% — within target ranges but worth flagging to the AM.',
+      narrative: 'Aqua Aston ran +14% spend in May driven by the Hawaii spring window. Bookings rose 10%, CPA 6%, within target ranges but worth flagging to the AM.',
       kpis: [
         { label: 'Total spend', value: '$34,500', deltaMoM: '+8%', vsBaseline: '+14%', anomaly: true },
         { label: 'Bookings', value: '1,754', deltaMoM: '+4%', vsBaseline: '+10%' },
@@ -106,7 +106,7 @@ export const REPORTS = [
     ],
     recommendations: [
       { fromSignal: 'sig-004', text: 'Confirm with AM whether the spring spike was modeled; set a $5k cap for the rest of Q2.', priority: 'medium' },
-      { text: 'Re-engage the client to unblock Revinate access — we\'re half-blind on CRM until then.', priority: 'medium' },
+      { text: 'Re-engage the client to unblock Revinate access, we\'re half-blind on CRM until then.', priority: 'medium' },
     ],
   },
   {
@@ -119,7 +119,7 @@ export const REPORTS = [
     onTimeTarget: '2026-06-03',
     sectionsSummary: 'Soft-brand rollup mostly on plan; one outlier dragging Meta CPC.',
     overview: {
-      narrative: 'Curator\'s 37-property rollup landed within band. One outlier member property drove most of an 18% Meta CPC rise — the rest of the portfolio was healthy.',
+      narrative: 'Curator\'s 37-property rollup landed within band. One outlier member property drove most of an 18% Meta CPC rise, the rest of the portfolio was healthy.',
       kpis: [
         { label: 'Total spend', value: '$40,500', deltaMoM: '+1%', vsBaseline: '+0%' },
         { label: 'Bookings', value: '2,459', deltaMoM: '+2%', vsBaseline: '+2%' },
@@ -129,7 +129,7 @@ export const REPORTS = [
     },
     platforms: [
       { platformId: 'gads', read: 'Google Ads on plan. ROAS 4.7x (baseline 4.8x). No outliers worth surfacing.' },
-      { platformId: 'meta', read: 'Meta CPC up 18% on the rollup. One outlier member (37th in roster) is ~70% of the spike — narrow geo, high cost.', anomalies: ['sig-007'] },
+      { platformId: 'meta', read: 'Meta CPC up 18% on the rollup. One outlier member (37th in roster) is ~70% of the spike, narrow geo, high cost.', anomalies: ['sig-007'] },
       { platformId: 'ga4', read: 'Sessions +2%, conversion rate held across all 37 properties.' },
     ],
     trends: [
@@ -148,15 +148,15 @@ export const REPORTS = [
     draftedAt: '2026-06-02T14:00Z',
     targetDeliveryAt: '2026-06-03T17:00Z',
     onTimeTarget: '2026-06-03',
-    sectionsSummary: 'Trade Desk CSV missing — partial report. SAL excluded programmatic.',
+    sectionsSummary: 'Trade Desk CSV missing, partial report. SAL excluded programmatic.',
     missingData: ['sig-003'],
     overview: {
-      narrative: 'Pfister\'s May report is partial. The Trade Desk CSV — programmatic spend, ~$9.5k baseline — has not arrived from the client. SAL has excluded programmatic from the cycle and flagged the gap.',
+      narrative: 'Pfister\'s May report is partial. The Trade Desk CSV, programmatic spend, ~$9.5k baseline, has not arrived from the client. SAL has excluded programmatic from the cycle and flagged the gap.',
       kpis: [
         { label: 'Total spend (ex. programmatic)', value: '$15,000', deltaMoM: '+3%', vsBaseline: '+3%' },
         { label: 'Bookings', value: '244', deltaMoM: '+2%', vsBaseline: '+1%' },
         { label: 'Blended ROAS', value: '4.0x', deltaMoM: '-2%', vsBaseline: '-5%' },
-        { label: 'Programmatic', value: '—', deltaMoM: 'missing', vsBaseline: 'missing', missing: true },
+        { label: 'Programmatic', value: ', ', deltaMoM: 'missing', vsBaseline: 'missing', missing: true },
       ],
     },
     platforms: [
@@ -212,9 +212,9 @@ export const REPORTS = [
     draftedAt: '2026-06-02T14:00Z',
     targetDeliveryAt: '2026-06-03T17:00Z',
     onTimeTarget: '2026-06-03',
-    sectionsSummary: 'Event-lead surge on Meta — opportunity for a dedicated wedding LP.',
+    sectionsSummary: 'Event-lead surge on Meta, opportunity for a dedicated wedding LP.',
     overview: {
-      narrative: 'Balboa Bay had a clean month. Event-lead Meta forms surged 20% MoM — wedding and corporate over-indexed on lead-to-booking conversion. Worth a dedicated landing page test.',
+      narrative: 'Balboa Bay had a clean month. Event-lead Meta forms surged 20% MoM, wedding and corporate over-indexed on lead-to-booking conversion. Worth a dedicated landing page test.',
       kpis: [
         { label: 'Total spend', value: '$23,000', deltaMoM: '+3%', vsBaseline: '+3%' },
         { label: 'Bookings', value: '1,177', deltaMoM: '+3%', vsBaseline: '+3%' },
@@ -247,7 +247,7 @@ export const REPORTS = [
     onTimeTarget: '2026-06-03',
     sectionsSummary: 'Direct bookings +13% (Q1 loyalty push paying off).',
     overview: {
-      narrative: 'Mauna Kea direct bookings (Revinate) up 13% MoM. Repeat-guest segment drove the lift — Q1 loyalty program is paying off.',
+      narrative: 'Mauna Kea direct bookings (Revinate) up 13% MoM. Repeat-guest segment drove the lift, Q1 loyalty program is paying off.',
       kpis: [
         { label: 'Total spend', value: '$30,500', deltaMoM: '+3%', vsBaseline: '+4%' },
         { label: 'Bookings', value: '561', deltaMoM: '+4%', vsBaseline: '+4%' },
@@ -259,7 +259,7 @@ export const REPORTS = [
       { platformId: 'gads', read: 'On plan. ROAS 7.18x (baseline 6.9x).' },
       { platformId: 'meta', read: 'On plan. Inter-island prospecting steady.' },
       { platformId: 'ga4', read: 'Sessions +3%; loyalty-segment landing pages converted at 2.4x portfolio average.' },
-      { platformId: 'revinate', read: 'Direct bookings +13%. Repeat guests are the driver — Q1 loyalty push showing ROI.', anomalies: ['sig-006'] },
+      { platformId: 'revinate', read: 'Direct bookings +13%. Repeat guests are the driver, Q1 loyalty push showing ROI.', anomalies: ['sig-006'] },
     ],
     trends: [
       { metric: 'Direct bookings', series: [540, 548, 558, 570, 575, 612] },

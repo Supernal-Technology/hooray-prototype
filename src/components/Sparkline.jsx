@@ -1,4 +1,4 @@
-// Tiny inline sparkline. SVG only — no axes, no gridlines.
+// Tiny inline sparkline. SVG only, no axes, no gridlines.
 // Stroke: accent-dark (healthy), amber (flagged), ink-3 (neutral).
 
 export default function Sparkline({

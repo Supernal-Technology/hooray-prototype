@@ -11,7 +11,7 @@ export const SIGNALS = [
     metric: 'roas',
     observed: 5.25, baseline: 6.4, deltaPct: -0.18,
     occurredAt: '2026-06-02T13:42Z',
-    narrative: 'Salamander Google Ads ROAS dropped to 5.25x in May — 18% below the 6-month baseline of 6.4x. Driven by a 22% rise in CPC on the "Middleburg weddings" campaign group; conversion volume held but unit economics slipped.',
+    narrative: 'Salamander Google Ads ROAS dropped to 5.25x in May, 18% below the 6-month baseline of 6.4x. Driven by a 22% rise in CPC on the "Middleburg weddings" campaign group; conversion volume held but unit economics slipped.',
     suggestedAction: 'Shift ~30% of spend from "Middleburg weddings" to high-intent search terms; pause two non-converting display placements.',
   },
   {
@@ -23,7 +23,7 @@ export const SIGNALS = [
     metric: 'roas',
     observed: 5.67, baseline: 5.2, deltaPct: 0.09,
     occurredAt: '2026-06-02T13:42Z',
-    narrative: 'Meta prospecting ROAS climbed 9% MoM with no spend change. Top of funnel is open — historical pattern says now is a 2–3 week window to lean in before saturation.',
+    narrative: 'Meta prospecting ROAS climbed 9% MoM with no spend change. Top of funnel is open, historical pattern says now is a 2–3 week window to lean in before saturation.',
     suggestedAction: 'Increase Meta prospecting budget by 15% for 14 days; reassess June 16.',
   },
   {
@@ -45,7 +45,7 @@ export const SIGNALS = [
     metric: 'spend_efficiency',
     observed: 1.08, baseline: 1.0, deltaPct: 0.14,
     occurredAt: '2026-06-03T09:22Z',
-    narrative: 'Aqua Aston Google Ads spend ran 14% above plan in May. The driver was the Hawaii spring break window — bookings rose 10% alongside, but CPA also rose 6%. Within target but worth flagging.',
+    narrative: 'Aqua Aston Google Ads spend ran 14% above plan in May. The driver was the Hawaii spring break window, bookings rose 10% alongside, but CPA also rose 6%. Within target but worth flagging.',
     suggestedAction: 'Confirm with AM whether the spring spike is the seasonal pattern we modeled or a one-off; either way, set a $5k cap for the remainder of Q2.',
   },
   {
@@ -57,7 +57,7 @@ export const SIGNALS = [
     metric: 'roas',
     observed: 7.5, baseline: 7.2, deltaPct: 0.04,
     occurredAt: '2026-06-02T13:42Z',
-    narrative: 'Timbers brand-defense terms hit 7.5x ROAS in May, 4% above baseline. The Sebastian Vail term has been the steady performer for 3 cycles — strong candidate for a feeder display campaign.',
+    narrative: 'Timbers brand-defense terms hit 7.5x ROAS in May, 4% above baseline. The Sebastian Vail term has been the steady performer for 3 cycles, strong candidate for a feeder display campaign.',
     suggestedAction: 'Spin up a $2k/mo display test layered on Sebastian Vail brand searchers; report back in 30 days.',
   },
   {
@@ -69,7 +69,7 @@ export const SIGNALS = [
     metric: 'direct_bookings',
     observed: 612, baseline: 540, deltaPct: 0.13,
     occurredAt: '2026-06-04T10:10Z',
-    narrative: 'Mauna Kea direct bookings (Revinate) up 13% MoM. Repeat-guest segment drove the lift — consistent with the Q1 loyalty push.',
+    narrative: 'Mauna Kea direct bookings (Revinate) up 13% MoM. Repeat-guest segment drove the lift, consistent with the Q1 loyalty push.',
     suggestedAction: 'Surface this in the Leadership view; share with Hooray strategy as Q1 program ROI evidence.',
   },
   {
@@ -81,7 +81,7 @@ export const SIGNALS = [
     metric: 'cpc',
     observed: 1.83, baseline: 1.55, deltaPct: 0.18,
     occurredAt: '2026-06-05T15:55Z',
-    narrative: 'Curator Meta CPC up 18% on the soft-brand portfolio rollup. One member property (37th in roster) is responsible for ~70% of the spike — narrow targeting in a high-cost geo.',
+    narrative: 'Curator Meta CPC up 18% on the soft-brand portfolio rollup. One member property (37th in roster) is responsible for ~70% of the spike, narrow targeting in a high-cost geo.',
     suggestedAction: 'Review the outlier property\'s geo settings; consider widening or reallocating its share to better-converting members.',
   },
   {
@@ -93,7 +93,7 @@ export const SIGNALS = [
     metric: 'event_leads',
     observed: 142, baseline: 118, deltaPct: 0.20,
     occurredAt: '2026-06-05T15:55Z',
-    narrative: 'Balboa Bay event-lead Meta forms up 20% MoM. Wedding & corporate are over-indexed against booking conversion — the AM should consider a dedicated wedding LP for July.',
+    narrative: 'Balboa Bay event-lead Meta forms up 20% MoM. Wedding & corporate are over-indexed against booking conversion, the AM should consider a dedicated wedding LP for July.',
     suggestedAction: 'Brief design on a wedding-focused LP; ship for July 1.',
   },
 ]

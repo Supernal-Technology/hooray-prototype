@@ -21,24 +21,20 @@ import Phase2Modal from './views/Phase2Modal'
 import ToastStack from './components/Toast'
 import { ReportsProvider, useReports } from './state/reportsStore'
 import { BULK_SYNC } from './data/sources'
-
-const ROLES = {
-  am: { id: 'am', name: 'Rachel Tanaka', title: 'Account Manager', canLeadership: false },
-  lead: { id: 'lead', name: 'David', title: 'CEO', canLeadership: true },
-}
+import { PEOPLE, scopeCount } from './data/people'
 
 export default function App() {
   // Two audiences, one interface. Client view is the hero and the default.
   const [mode, setMode] = useState('client') // 'client' | 'am'
   const [bannerOpen, setBannerOpen] = useState(true)
 
-  // AM-shell state (preserved across mode toggles — both shells stay mounted).
+  // AM-shell state (preserved across mode toggles, both shells stay mounted).
   const [active, setActive] = useState('portfolio')
   const [reportContext, setReportContext] = useState(null)
   const [askOpen, setAskOpen] = useState(true) // dock open by default, every tab
   const [askContext, setAskContext] = useState(null)
   const [showPhase2, setShowPhase2] = useState(false)
-  const [role, setRole] = useState(ROLES.am)
+  const [role, setRole] = useState(PEOPLE[0]) // Steven (full access) by default
 
   const [toasts, setToasts] = useState([])
   const fireToast = useCallback((t) => {
@@ -166,7 +162,7 @@ function AMShell({ active, onNav, askOpen, askContext, onCloseAsk, onReopenAsk, 
           </div>
         </main>
 
-        {/* Persistent right-rail chat — open by default on every tab. */}
+        {/* Persistent right-rail chat, open by default on every tab. */}
         {dockVisible && <AskSal variant="dock" scopedClientId={askContext} onClose={onCloseAsk} onExpand={() => onNav('ask')} />}
         {!askOpen && !onAskPage && (
           <button
@@ -195,17 +191,17 @@ function Sidebar({ active, onNav, onPhase2, role, setRole }) {
       <nav className="flex-1 py-4 flex flex-col gap-5">
         <NavGroup label="App">
           <NavItem label="Portfolio" icon={<LayoutDashboard size={16} aria-hidden="true" />} active={active === 'portfolio'} onClick={() => onNav('portfolio')} />
-          <NavItem label="Report Approvals" icon={<ClipboardCheck size={16} aria-hidden="true" />} active={active === 'reports'} onClick={() => onNav('reports')} badge={pending || null} />
-          <NavItem label="Data Sources" icon={<Database size={16} aria-hidden="true" />} active={active === 'sources'} onClick={() => onNav('sources')} />
+          <NavItem label="Reporting" icon={<ClipboardCheck size={16} aria-hidden="true" />} active={active === 'reports'} onClick={() => onNav('reports')} badge={pending || null} />
+          <NavItem label="Genome" icon={<Database size={16} aria-hidden="true" />} active={active === 'sources'} onClick={() => onNav('sources')} />
         </NavGroup>
 
         <NavGroup label="Signals">
-          <NavItem label="Anomalies & Opportunities" icon={<AlertTriangle size={16} aria-hidden="true" />} active={active === 'anomalies'} onClick={() => onNav('anomalies')} />
+          <NavItem label="Insights" icon={<AlertTriangle size={16} aria-hidden="true" />} active={active === 'anomalies'} onClick={() => onNav('anomalies')} />
           <NavItem label="Signals Feed" icon={<Activity size={16} aria-hidden="true" />} active={active === 'signals'} onClick={() => onNav('signals')} />
         </NavGroup>
 
         <NavGroup label="SAL">
-          <NavItem label="Ask SAL · full screen" icon={<Sparkles size={16} aria-hidden="true" />} active={active === 'ask'} onClick={() => onNav('ask')} />
+          <NavItem label="Ask SAL" icon={<Sparkles size={16} aria-hidden="true" />} active={active === 'ask'} onClick={() => onNav('ask')} />
         </NavGroup>
 
         <NavGroup label="Next">
@@ -218,11 +214,11 @@ function Sidebar({ active, onNav, onPhase2, role, setRole }) {
       </nav>
 
       <div className="px-4 pb-3">
-        <div className="card p-3">
+        <button onClick={() => onNav('sources')} className="card p-3 w-full text-left hover:bg-subtle transition-colors" title="Open the Genome">
           <div className="flex items-center gap-1.5 eyebrow mb-2"><Database size={11} aria-hidden="true" /> Genome</div>
           <div className="text-xs text-ink-2">{synced} sources synced</div>
           <div className={`text-xs mt-1 ${awaiting > 0 ? 'text-amber-text font-medium' : 'text-ink-3'}`}>{awaiting} awaiting data</div>
-        </div>
+        </button>
       </div>
 
       <RoleSwitcher role={role} setRole={setRole} />
@@ -275,21 +271,31 @@ function RoleSwitcher({ role, setRole }) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-xs font-semibold text-ink truncate">{role.name}</div>
-          <div className="text-[10px] text-ink-3 truncate">{role.title}</div>
+          <div className="text-[10px] text-ink-3 truncate">{role.title} · {scopeLabel(role)}</div>
         </div>
         <ChevronDown size={12} className="text-ghost flex-shrink-0" aria-hidden="true" />
       </button>
       {open && (
         <div className="absolute bottom-full left-3 right-3 mb-1 bg-card border border-hairline-strong rounded-xl shadow-elevated overflow-hidden z-30">
           <div className="px-3 py-2 eyebrow border-b border-hairline-soft">View as</div>
-          <button onClick={() => { setRole(ROLES.am); setOpen(false) }} className="w-full text-left px-3 py-2 hover:bg-accent/10 text-xs text-ink transition-colors duration-150">
-            Rachel Tanaka <span className="text-ink-3">· AM</span>
-          </button>
-          <button onClick={() => { setRole(ROLES.lead); setOpen(false) }} className="w-full text-left px-3 py-2 hover:bg-accent/10 text-xs text-ink transition-colors duration-150">
-            David <span className="text-ink-3">· CEO</span>
-          </button>
+          {PEOPLE.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => { setRole(p); setOpen(false) }}
+              aria-current={p.id === role.id}
+              className={`w-full text-left px-3 py-2 hover:bg-accent/10 text-xs transition-colors duration-150 ${p.id === role.id ? 'bg-accent-pale text-ink' : 'text-ink'}`}
+            >
+              <div className="font-medium">{p.name}</div>
+              <div className="text-[10px] text-ink-3">{p.title} · {scopeLabel(p)}</div>
+            </button>
+          ))}
         </div>
       )}
     </div>
   )
+}
+
+function scopeLabel(person) {
+  const n = scopeCount(person)
+  return n === null ? 'all accounts' : `${n} accounts`
 }

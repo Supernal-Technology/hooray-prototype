@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { RefreshCw, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
 import { CLIENTS } from '../data/clients'
 import { SOURCES, PLATFORMS, BULK_SYNC } from '../data/sources'
+import { useReports } from '../state/reportsStore'
 import TierBadge from '../components/TierBadge'
 import StatusPill from '../components/StatusPill'
 import ClientAvatar from '../components/ClientAvatar'
@@ -9,6 +10,8 @@ import ClientAvatar from '../components/ClientAvatar'
 const PLATFORM_LIST = Object.values(PLATFORMS)
 
 export default function DataSources({ onToast }) {
+  const { inScope } = useReports()
+  const scopedClients = CLIENTS.filter((c) => inScope(c.id))
   const [syncing, setSyncing] = useState(false)
   const [lastSync, setLastSync] = useState(BULK_SYNC.lastCompletedAt)
 
@@ -25,9 +28,9 @@ export default function DataSources({ onToast }) {
     <div className="animate-fade-up">
       <header className="mb-8 flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <div className="eyebrow">Data sources</div>
-          <h1 className="text-2xl font-serif font-semibold text-ink mt-1">Data Sources & Access</h1>
-          <p className="text-sm text-ink-3 mt-1">Per-client connections, sync status, and contract-compliance state.</p>
+          <div className="eyebrow">The Genome</div>
+          <h1 className="text-2xl font-serif font-semibold text-ink mt-1">Genome</h1>
+          <p className="text-sm text-ink-3 mt-1">The centralized data layer SAL draws from, every client's connections, sync status, and access tier.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">
@@ -62,7 +65,7 @@ export default function DataSources({ onToast }) {
             </tr>
           </thead>
           <tbody>
-            {CLIENTS.map((c) => (
+            {scopedClients.map((c) => (
               <tr key={c.id} className="border-t border-hairline-soft hover:bg-subtle">
                 <td className="px-5 py-3 sticky left-0 bg-card">
                   <div className="flex items-center gap-2.5">
@@ -84,7 +87,7 @@ export default function DataSources({ onToast }) {
                   const s = SOURCES.find((x) => x.clientId === c.id && x.platformId === p.id)
                   return (
                     <td key={p.id} className="px-3 py-3 text-center">
-                      {s ? <SourceCell source={s} /> : <span className="text-xs text-ghost">—</span>}
+                      {s ? <SourceCell source={s} /> : <span className="text-xs text-ghost">, </span>}
                     </td>
                   )
                 })}
@@ -107,7 +110,7 @@ function SourceCell({ source }) {
     'delegated-pending': { icon: <Clock size={14} className="text-ink-3" />, label: 'Pending' },
     'csv-manual':        { icon: <CheckCircle2 size={14} className="text-amber" />, label: 'CSV' },
     'csv-missing':       { icon: <AlertTriangle size={14} className="text-amber" />, label: 'Missing' },
-    'disconnected':      { icon: <AlertTriangle size={14} className="text-amber" />, label: '—' },
+    'disconnected':      { icon: <AlertTriangle size={14} className="text-amber" />, label: ', ' },
   }
   const m = map[source.status] ?? { icon: null, label: source.status }
   return (

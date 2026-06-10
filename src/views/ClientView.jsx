@@ -6,10 +6,10 @@ import { CURRENT_PERIOD } from '../data/performance'
 import ReportArticle from '../components/ReportArticle'
 import ChatPanel from '../components/ChatPanel'
 
-// CLIENT VIEW — the hero. A hotel client opens their monthly report and talks to
+// CLIENT VIEW, the hero. A hotel client opens their monthly report and talks to
 // their own data. Report fills the main column; "Talk to this data" is docked
 // right and open by default (it is the product, not a drawer). Scoped to one
-// property only — no portfolio, no other clients, no approval machinery.
+// property only, no portfolio, no other clients, no approval machinery.
 const CLIENT_ID = 'resorts-world'
 
 export default function ClientView({ onToast }) {
@@ -45,7 +45,7 @@ export default function ClientView({ onToast }) {
         </div>
       </main>
 
-      {/* Chat is docked, open by default — the product, not a drawer. */}
+      {/* Chat is docked, open by default, the product, not a drawer. */}
       <aside className="w-[400px] flex-shrink-0 border-l border-hairline h-full">
         <ChatPanel askSignal={askSignal} />
       </aside>
@@ -53,7 +53,7 @@ export default function ClientView({ onToast }) {
   )
 }
 
-// Visibly present, politely stubbed — a self-serve data product obviously needs
+// Visibly present, politely stubbed, a self-serve data product obviously needs
 // a period picker; only May is loaded in the prototype.
 function PeriodSelector({ onToast }) {
   return (

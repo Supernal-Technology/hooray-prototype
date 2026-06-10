@@ -3,15 +3,17 @@ import { AlertTriangle, Lightbulb, Check, ExternalLink } from 'lucide-react'
 import { SIGNALS } from '../data/signals'
 import { getClient } from '../data/clients'
 import { getPlatform } from '../data/sources'
+import { useReports } from '../state/reportsStore'
 import ClientAvatar from '../components/ClientAvatar'
 import TierBadge from '../components/TierBadge'
 
 export default function Anomalies({ onOpenAskSal, onToast }) {
   const [approved, setApproved] = useState({})
   const [dismissed, setDismissed] = useState({})
+  const { inScope } = useReports()
 
-  const anomalies = SIGNALS.filter((s) => s.kind === 'anomaly' && !dismissed[s.id])
-  const recommendations = SIGNALS.filter((s) => s.kind === 'recommendation' && !dismissed[s.id])
+  const anomalies = SIGNALS.filter((s) => s.kind === 'anomaly' && !dismissed[s.id] && inScope(s.clientId))
+  const recommendations = SIGNALS.filter((s) => s.kind === 'recommendation' && !dismissed[s.id] && inScope(s.clientId))
 
   const handleApprove = (sig) => {
     setApproved((a) => ({ ...a, [sig.id]: true }))
@@ -26,7 +28,7 @@ export default function Anomalies({ onOpenAskSal, onToast }) {
     <div className="animate-fade-up">
       <header className="mb-8">
         <div className="eyebrow">Signals</div>
-        <h1 className="text-2xl font-serif font-medium tracking-tight text-ink mt-1">Anomalies & Opportunities</h1>
+        <h1 className="text-2xl font-serif font-medium tracking-tight text-ink mt-1">Insights</h1>
         <p className="text-sm text-ink-3 mt-1">Every flag has a reason. SAL surfaces; you decide.</p>
       </header>
 

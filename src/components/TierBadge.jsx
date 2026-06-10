@@ -1,4 +1,4 @@
-// Access tier badge — Tier 1/2/3. Mono (data) type, accent ladder.
+// Access tier badge, Tier 1/2/3. Mono (data) type, accent ladder.
 // T3 (manual CSV) carries amber: the most fragile source, genuinely needs attention.
 
 const TIER_STYLES = {

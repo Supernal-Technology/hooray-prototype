@@ -1,4 +1,4 @@
-// Report status pill. NYT-style — maps the lifecycle to the accent ladder.
+// Report status pill. NYT-style, maps the lifecycle to the accent ladder.
 import { Check, AlertTriangle } from 'lucide-react'
 
 const STYLES = {

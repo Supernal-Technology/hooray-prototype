@@ -3,6 +3,7 @@ import { AlertTriangle, Lightbulb, FileX, TrendingUp } from 'lucide-react'
 import { SIGNALS } from '../data/signals'
 import { CLIENTS, getClient } from '../data/clients'
 import { PLATFORMS, getPlatform } from '../data/sources'
+import { useReports } from '../state/reportsStore'
 import ClientAvatar from '../components/ClientAvatar'
 
 const KIND_META = {
@@ -16,14 +17,18 @@ export default function SignalsFeed({ onOpenAskSal, onOpenClient }) {
   const [clientFilter, setClientFilter] = useState('')
   const [platformFilter, setPlatformFilter] = useState('')
   const [kindFilter, setKindFilter] = useState('')
+  const { inScope } = useReports()
+
+  const scopedSignals = useMemo(() => SIGNALS.filter((s) => inScope(s.clientId)), [inScope])
+  const scopedClients = useMemo(() => CLIENTS.filter((c) => inScope(c.id)), [inScope])
 
   const filtered = useMemo(() => {
-    return SIGNALS
+    return scopedSignals
       .filter((s) => !clientFilter || s.clientId === clientFilter)
       .filter((s) => !platformFilter || s.platformId === platformFilter)
       .filter((s) => !kindFilter || s.kind === kindFilter)
       .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
-  }, [clientFilter, platformFilter, kindFilter])
+  }, [clientFilter, platformFilter, kindFilter, scopedSignals])
 
   return (
     <div className="animate-fade-up">
@@ -34,10 +39,10 @@ export default function SignalsFeed({ onOpenAskSal, onOpenClient }) {
       </header>
 
       <div className="card p-3 mb-6 flex items-center gap-3 flex-wrap">
-        <Filter label="Client" value={clientFilter} onChange={setClientFilter} options={[['', 'All clients'], ...CLIENTS.map((c) => [c.id, c.name])]} />
+        <Filter label="Client" value={clientFilter} onChange={setClientFilter} options={[['', 'All clients'], ...scopedClients.map((c) => [c.id, c.name])]} />
         <Filter label="Platform" value={platformFilter} onChange={setPlatformFilter} options={[['', 'All platforms'], ...Object.values(PLATFORMS).map((p) => [p.id, p.name])]} />
         <Filter label="Event" value={kindFilter} onChange={setKindFilter} options={[['', 'All events'], ...Object.entries(KIND_META).map(([k, m]) => [k, m.label])]} />
-        <div className="ml-auto font-mono text-xs text-ghost">{filtered.length} of {SIGNALS.length} events</div>
+        <div className="ml-auto font-mono text-xs text-ghost">{filtered.length} of {scopedSignals.length} events</div>
       </div>
 
       <div className="card divide-y divide-hairline-soft">

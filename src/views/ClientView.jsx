@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { LayoutDashboard, FileText, History, ChevronDown, Hotel, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react'
+import { LayoutDashboard, FileText, History, ChevronDown, Hotel, CheckCircle2, ArrowRight, MessageCircle, Sparkles, ArrowUpRight, ArrowDownRight, Download } from 'lucide-react'
 import { CLIENT_REPORT } from '../data/clientReport'
 import Chart from '../components/Chart'
 import ChatDock from '../components/ChatDock'
@@ -9,6 +9,13 @@ import ChatDock from '../components/ChatDock'
 // and the shared Ask SAL drawer docked right. The chat re-scopes per section.
 // The Monthly Report faithfully mirrors Hooray's "Web & Media Overview" recap.
 const R = CLIENT_REPORT
+
+// Recap download. In the live product this renders the branded PDF; the prototype
+// has no backend, so we simulate the generate-then-ready flow with a two-step toast.
+function downloadRecap(onToast, period) {
+  onToast?.({ title: 'Preparing your PDF', body: `Rendering the ${R.clientName} · ${period} recap.` })
+  setTimeout(() => onToast?.({ title: `${period} recap ready`, body: 'PDF export is simulated in this prototype.' }), 1100)
+}
 
 const HISTORY_CHAT = {
   id: 'history', label: 'past reports',
@@ -34,7 +41,7 @@ export default function ClientView({ onToast }) {
     <div className="flex h-full min-h-0">
       <ClientNav view={view} setView={setView} />
       <main className="flex-1 min-w-[480px] overflow-auto">
-        {view === 'dashboard' && <Dashboard />}
+        {view === 'dashboard' && <Dashboard onOpenReport={(tab) => { if (tab) setTabId(tab); setView('report') }} />}
         {view === 'report' && <MonthlyReport tabId={tabId} setTabId={setTabId} onToast={onToast} onAskAbout={askAbout} />}
         {view === 'history' && <ReportHistory onToast={onToast} />}
       </main>
@@ -133,17 +140,93 @@ function DataTable({ table }) {
 }
 
 /* ---------------- Dashboard (live) ---------------- */
-function Dashboard() {
+function Dashboard({ onOpenReport }) {
+  const D = R.dashboard
   return (
     <div className="animate-fade-up px-8 py-8 max-w-6xl mx-auto">
-      <div className="eyebrow">{R.dashboard.eyebrow}</div>
+      <div className="eyebrow">{D.eyebrow}</div>
       <h1 className="text-3xl font-serif font-medium tracking-tight text-ink mt-1.5">Dashboard</h1>
-      <p className="text-base font-serif text-ink-2 leading-relaxed mt-3 max-w-prose">{R.dashboard.lede}</p>
-      <div className="mt-6"><KpiGrid kpis={R.dashboard.kpis} /></div>
-      <div className="mt-6 rounded-card border border-hairline bg-subtle px-4 py-3 flex items-center gap-2.5 text-sm text-ink-2">
-        <MessageCircle size={15} className="text-accent-dark flex-shrink-0" aria-hidden="true" />
-        Ask SAL on the right for the live read, or open your <span className="font-medium text-ink">Monthly Report</span> for the full {R.period} recap.
+      <p className="text-base font-serif text-ink-2 leading-relaxed mt-3 max-w-prose">{D.lede}</p>
+
+      <div className="mt-6"><KpiGrid kpis={D.kpis} /></div>
+
+      {/* SAL's read + what's driving it, side by side with the revenue mix */}
+      <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
+        <div className="lg:col-span-2 card p-5">
+          <div className="flex items-center gap-2">
+            <Sparkles size={14} className="text-accent-dark" aria-hidden="true" />
+            <span className="eyebrow">SAL's read · {R.period}</span>
+          </div>
+          <p className="mt-3 text-[17px] font-serif text-ink leading-relaxed">{D.headline.read}</p>
+          <div className="mt-5 pt-4 border-t border-hairline-soft grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+            {D.drivers.map((d) => (
+              <div key={d.label} className="flex items-start gap-2.5">
+                {d.dir === 'up'
+                  ? <ArrowUpRight size={15} className="text-accent-dark mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  : <ArrowDownRight size={15} className="text-amber-text mt-0.5 flex-shrink-0" aria-hidden="true" />}
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-ink leading-tight">{d.label}</div>
+                  <div className="text-[12px] text-ink-3 mt-0.5">{d.detail}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card p-5">
+          <span className="eyebrow">{D.channelChart.title}</span>
+          <div className="mt-3"><Chart spec={D.channelChart.spec} /></div>
+        </div>
       </div>
+
+      {/* The questions this month answers */}
+      <div className="mt-8">
+        <div className="flex items-center gap-2">
+          <Sparkles size={14} className="text-accent-dark" aria-hidden="true" />
+          <span className="eyebrow">The questions this month answers</span>
+        </div>
+        <div className="mt-3 card divide-y divide-hairline-soft overflow-hidden">
+          {D.execQuestions.map((item, i) => <ExecQA key={i} item={item} defaultOpen={i === 0} onOpenReport={onOpenReport} />)}
+        </div>
+      </div>
+
+      {/* Report ready strip */}
+      <button onClick={() => onOpenReport()} className="mt-3 w-full text-left rounded-card border border-hairline bg-subtle hover:bg-muted transition-colors px-4 py-3.5 flex items-center gap-3 group">
+        <CheckCircle2 size={17} className="text-accent-dark flex-shrink-0" aria-hidden="true" />
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-ink">Your {R.period} recap is signed off and ready</div>
+          <div className="text-[12px] text-ink-3 mt-0.5">The full Web &amp; media overview, with the why behind every number.</div>
+        </div>
+        <span className="text-sm font-medium text-accent-dark inline-flex items-center gap-1 flex-shrink-0">Open Monthly Report <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" /></span>
+      </button>
+
+      <div className="mt-3 flex items-center gap-2 text-[12px] text-ink-3">
+        <MessageCircle size={13} className="text-accent-dark flex-shrink-0" aria-hidden="true" />
+        Ask SAL on the right for a live read on any of this.
+      </div>
+    </div>
+  )
+}
+
+function ExecQA({ item, defaultOpen, onOpenReport }) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div>
+      <button onClick={() => setOpen((o) => !o)} className="w-full text-left px-5 py-3.5 flex items-center gap-3 hover:bg-subtle/60 transition-colors">
+        <span className="flex-1 text-[15px] font-serif text-ink leading-snug">{item.q}</span>
+        {item.stat && <span className="hidden sm:inline text-[11px] font-mono text-ink-3 flex-shrink-0">{item.stat}</span>}
+        <ChevronDown size={15} className={`text-ink-3 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+      {open && (
+        <div className="px-5 pb-4 pt-1 animate-fade-up">
+          <p className="text-sm text-ink-2 leading-relaxed max-w-prose">{item.a}</p>
+          {item.to && (
+            <button onClick={() => onOpenReport(item.to)} className="mt-3 text-[12px] font-medium text-accent-dark inline-flex items-center gap-1 group">
+              See it in the report <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -159,9 +242,14 @@ function MonthlyReport({ tabId, setTabId, onToast, onAskAbout }) {
             <div className="eyebrow">Monthly recap · Web &amp; media overview</div>
             <div className="text-sm font-medium text-ink mt-0.5">{R.clientName} · {R.period}</div>
           </div>
-          <button onClick={() => onToast?.({ title: `${R.period} is the loaded period`, body: 'Past periods live under History; switching is stubbed here.' })} className="btn-secondary text-xs px-3 py-1.5 inline-flex items-center gap-1.5">
-            {R.period} <ChevronDown size={13} aria-hidden="true" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => onToast?.({ title: `${R.period} is the loaded period`, body: 'Past periods live under History; switching is stubbed here.' })} className="btn-secondary text-xs px-3 py-1.5 inline-flex items-center gap-1.5">
+              {R.period} <ChevronDown size={13} aria-hidden="true" />
+            </button>
+            <button onClick={() => downloadRecap(onToast, R.period)} className="btn-secondary text-xs px-3 py-1.5 inline-flex items-center gap-1.5">
+              <Download size={13} aria-hidden="true" /> Download PDF
+            </button>
+          </div>
         </div>
       </div>
 
@@ -314,20 +402,25 @@ function ReportHistory({ onToast }) {
       <h1 className="text-3xl font-serif font-medium tracking-tight text-ink mt-1.5">History</h1>
       <p className="text-sm text-ink-3 mt-1">Your past monthly recaps. Open one, or ask SAL to compare periods.</p>
       <div className="card overflow-hidden mt-6">
-        <div className="grid grid-cols-[1fr_120px_120px_90px] px-5 py-3 border-b border-hairline-soft bg-subtle text-[11px] uppercase tracking-wide font-semibold text-ink-3">
+        <div className="grid grid-cols-[1fr_120px_120px_150px] px-5 py-3 border-b border-hairline-soft bg-subtle text-[11px] uppercase tracking-wide font-semibold text-ink-3">
           <span>Period</span><span>Revenue</span><span>Blended RoAS</span><span></span>
         </div>
         {R.history.map((h) => (
-          <div key={h.period} className="grid grid-cols-[1fr_120px_120px_90px] items-center px-5 py-3.5 border-b border-hairline-soft last:border-b-0 hover:bg-subtle transition-colors">
+          <div key={h.period} className="grid grid-cols-[1fr_120px_120px_150px] items-center px-5 py-3.5 border-b border-hairline-soft last:border-b-0 hover:bg-subtle transition-colors">
             <div>
               <div className="text-sm font-medium text-ink">{h.label}</div>
               <div className="text-[11px] text-ink-3 mt-0.5"><span className="pill pill-sm pill-done"><CheckCircle2 size={11} strokeWidth={2.5} /> Delivered</span></div>
             </div>
             <div className="text-sm text-ink-2 font-mono">{h.revenue}</div>
             <div className="text-sm text-ink-2 font-mono">{h.roas}</div>
-            <button onClick={() => onToast?.({ title: `${h.label} recap`, body: 'Historical recaps are stubbed in this prototype.' })} className="text-xs font-semibold text-accent-dark hover:underline inline-flex items-center gap-1 justify-self-end">
-              View <ArrowRight size={12} aria-hidden="true" />
-            </button>
+            <div className="flex items-center gap-3 justify-self-end">
+              <button onClick={() => downloadRecap(onToast, h.label)} className="text-ink-3 hover:text-ink transition-colors" title={`Download ${h.label} PDF`} aria-label={`Download ${h.label} PDF`}>
+                <Download size={15} aria-hidden="true" />
+              </button>
+              <button onClick={() => onToast?.({ title: `${h.label} recap`, body: 'Historical recaps are stubbed in this prototype.' })} className="text-xs font-semibold text-accent-dark hover:underline inline-flex items-center gap-1">
+                View <ArrowRight size={12} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         ))}
       </div>

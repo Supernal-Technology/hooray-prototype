@@ -267,8 +267,8 @@ function ReportDocument({ report, state, client, onSignOff, onSendBack, onSaveEd
   return (
     <div className="space-y-8">
       {/* Sticky action bar (top) */}
-      <div className="sticky top-0 z-10 -mx-1 px-1 pt-1 max-w-[760px] mx-auto">
-        <div className="card shadow-elevated flex items-center justify-between gap-3 p-3 backdrop-blur" style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}>
+      <div className="sticky top-0 z-10 -mx-1 px-1 pt-2 pb-2 max-w-[760px] mx-auto bg-page">
+        <div className="card shadow-elevated flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3">
           <div className="flex items-center gap-2 min-w-0">
             <StatusPill status={status} />
             {state.sawRevision && isInteractive && (

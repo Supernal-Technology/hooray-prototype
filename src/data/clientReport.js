@@ -43,6 +43,51 @@ export const CLIENT_REPORT = {
       numbers: [k('Total revenue', '$179.9K', '-8.8%'), k('ADR', '$389', '+20%')],
       sources: [SRC.ga4, SRC.gads],
     },
+    // SAL's plain-language read of the month, shown front and center on the dashboard.
+    headline: {
+      confidence: 'high',
+      read:
+        "In a softer market, you're protecting rate instead of discounting to chase volume, and it's working. ADR is up 20% to $389 and paid media is returning a strong ~5:1, so revenue is holding within 9% of last year even though booking volume is down ~23%. Your lowest-cost channels, organic and referral, are quietly growing their share.",
+    },
+    // What's moving the numbers, up or down, at a glance.
+    drivers: [
+      { label: 'Rate protected over volume', detail: 'ADR up 20% to $389', dir: 'up' },
+      { label: 'Paid media is efficient', detail: 'Blended ~5:1, every paid channel beat benchmark', dir: 'up' },
+      { label: 'Low-cost channels grew', detail: 'Organic + referral gained revenue share', dir: 'up' },
+      { label: 'Volume softened', detail: 'Bookings down ~23% YoY on a tougher market', dir: 'down' },
+    ],
+    // Where the month's revenue actually came from (GA4 channel attribution).
+    channelChart: { title: 'Where revenue came from', spec: { type: 'bars', format: 'currency-full', items: [
+      { label: 'Organic Search', value: 58369 },
+      { label: 'Paid Search', value: 47402 },
+      { label: 'Referral', value: 26157 },
+      { label: 'Direct', value: 18622 },
+      { label: 'Email', value: 11462 },
+    ] } },
+    // The core executive questions the May deck answers, surfaced and answered
+    // inline on the dashboard. `to` deep-links the relevant Monthly Report tab.
+    execQuestions: [
+      { q: 'How are we performing online vs. last year?', stat: '-8.8% revenue YoY',
+        a: "Volume is down but value is up. Sessions and bookings fell ~23% YoY on a softer market, yet a 20% higher ADR ($389) held revenue within 9% of last year at $179.9K. The business is healthier per booking than it looks on volume alone.", to: 'summary' },
+      { q: 'Are our marketing investments generating profitable revenue?', stat: '~5:1 blended RoAS',
+        a: "Yes. Paid media returned a strong ~5:1 blended RoAS in May and every paid channel beat its industry benchmark. The investment is paying back well above the cost of the media.", to: 'media' },
+      { q: 'What channels are driving bookings and revenue?', stat: 'Organic leads at $58K',
+        a: "Organic Search led at $58K, then Paid Search ($47K) and Referral ($26K). The healthy signal: your lowest-cost channels, organic and referral, grew their share, so paid is lifting the channels around it, not just buying its own conversions.", to: 'website' },
+      { q: 'Why are bookings down despite more marketing activity?', stat: 'Rate protected over volume',
+        a: "A deliberate choice. The market softened, and rather than discount to chase volume, the strategy protected rate, so you booked fewer, higher-value stays. Media expanded reach and visibility to sustain demand at a 20% higher ADR instead of cutting price.", to: 'summary' },
+      { q: 'Is the website healthy and converting visitors?', stat: '38% bounce rate',
+        a: "Yes. Bounce held at 38% against a 55-60% hospitality benchmark, so visitors are staying and engaging rather than leaving on the first page. Check-availability and engagement quality stayed healthy all month.", to: 'website' },
+      { q: 'Are our paid channels beating industry benchmarks?', stat: '73% brand impression share',
+        a: "Across the board, yes. Every paid channel beat benchmark, and brand impression share sits at 73%, right in the 70-80% target, with ~7 points of headroom to fully box out the OTAs on your own name.", to: 'paid' },
+      { q: 'Which campaigns and offers are working best?', stat: 'Search 499% · Social 575% RoAS',
+        a: "Search and Social are the workhorses. Search drove 66 bookings at a 499% RoAS, Social 60 bookings at 575%, and Display played a small high-intent support role (10 bookings, 315%). Budget is concentrated where the return is strongest.", to: 'media' },
+      { q: 'How are prospecting efforts affecting performance?', stat: 'CTR dip by design',
+        a: "Prospecting is widening the top of the funnel on purpose. As Performance Max expands reach to broader audiences, click-rate dilutes by design, but the payoff shows up downstream in the organic and referral lift, your paid investment is feeding the lower-cost channels.", to: 'paid' },
+      { q: 'What creative and promotional strategies are running?', stat: 'Rate-integrity positioning',
+        a: "The through-line this month was rate integrity: premium, experience-led creative across Search, Social and Display that sells the resort and spa experience rather than leading with discounts. That positioning is what let ADR climb 20% while demand held.", to: 'social' },
+      { q: 'What are the next strategic priorities for the quarter?', stat: 'Push brand share toward 80%',
+        a: "Three moves: keep protecting rate while the market is soft, push brand impression share from 73% toward 80% to capture the OTA headroom, and keep scaling the efficient Search and Social campaigns while leaning into the organic and referral momentum.", to: 'summary' },
+    ],
     questions: [
       { id: 'd-how', label: 'How are we doing this month?', answer: { confidence: 'high', narrative: "Solid given the market. Volume is down YoY across sessions and bookings, but a 20% higher ADR and a strong ~5:1 blended RoAS are sustaining revenue, and low-cost organic/referral are growing their share. The full read is in your May recap.", numbers: [k('ADR', '$389', '+20%'), k('Blended RoAS', '5.1:1', '')], sources: [SRC.ga4, SRC.gads] } },
       { id: 'd-why', label: 'Why is revenue down if rate is up?', answer: { confidence: 'high', narrative: "Fewer, higher-value stays. Booking volume softened ~23% YoY on a tougher market, so even with ADR up 20% and length-of-stay steady, total revenue landed 8.8% lower. The strategy protected rate and demand rather than discounting to chase volume.", numbers: [k('Bookings', '270', '-23%'), k('ADR', '$389', '+20%')], sources: [SRC.ga4] } },

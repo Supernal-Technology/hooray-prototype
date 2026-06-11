@@ -4,7 +4,7 @@
 //
 // Hospitality accounts carry real hotel-shaped data. Non-hospitality accounts
 // (Pfizer, Thales Avionics, Sony, Providence Healthcare) are invented roster
-// entries — their numbers are placeholders.
+// entries, their numbers are placeholders.
 
 export const ACCESS_TIERS = {
   TIER_1: { id: 1, label: 'Tier 1', sub: 'Hooray-managed', short: 'T1' },

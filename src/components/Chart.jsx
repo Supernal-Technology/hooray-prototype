@@ -21,8 +21,32 @@ export default function Chart({ spec }) {
     case 'groupedBars': return <GroupedBars spec={spec} />
     case 'stacked': return <StackedBar spec={spec} />
     case 'stat': return <StatCallout spec={spec} />
+    case 'bars': return <RankedBars spec={spec} />
     default: return null
   }
+}
+
+/* ---------- Ranked horizontal bars (revenue by channel / rate plan) ---------- */
+function RankedBars({ spec }) {
+  const { items, format, highlightTop = true } = spec // items: [{label, value}]
+  const max = Math.max(...items.map((i) => i.value)) || 1
+  return (
+    <figure className="mt-1 space-y-1.5">
+      {items.map((it, i) => {
+        const pct = Math.max(2, (it.value / max) * 100)
+        const color = highlightTop && i === 0 ? ACCENT_DARK : i < 3 ? ACCENT_DARK : ACCENT
+        return (
+          <div key={i} className="flex items-center gap-2">
+            <span className="w-28 text-[11px] text-ink-2 truncate flex-shrink-0 text-right">{it.label}</span>
+            <div className="flex-1 h-4 rounded bg-subtle overflow-hidden">
+              <div className="chart-bar-grow h-full rounded" style={{ width: `${pct}%`, backgroundColor: color, animationDelay: `${i * 40}ms` }} />
+            </div>
+            <span className="w-16 text-[10px] font-mono text-ink-3 flex-shrink-0">{fmt(it.value, format)}</span>
+          </div>
+        )
+      })}
+    </figure>
+  )
 }
 
 function fmt(v, format) {

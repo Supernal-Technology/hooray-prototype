@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import {
   LayoutDashboard,
   ClipboardCheck,
@@ -15,12 +15,14 @@ import ReportApprovals from './views/ReportApprovals'
 import DataSources from './views/DataSources'
 import Anomalies from './views/Anomalies'
 import SignalsFeed from './views/SignalsFeed'
-import AskSal from './views/AskSal'
 import ClientView from './views/ClientView'
 import Phase2Modal from './views/Phase2Modal'
 import ToastStack from './components/Toast'
+import ChatDock from './components/ChatDock'
 import { ReportsProvider, useReports } from './state/reportsStore'
 import { BULK_SYNC } from './data/sources'
+import { AM_CHAT } from './data/askSal'
+import { getClient } from './data/clients'
 import { PEOPLE, scopeCount } from './data/people'
 
 export default function App() {
@@ -31,9 +33,9 @@ export default function App() {
   // AM-shell state (preserved across mode toggles, both shells stay mounted).
   const [active, setActive] = useState('portfolio')
   const [reportContext, setReportContext] = useState(null)
-  const [askOpen, setAskOpen] = useState(true) // dock open by default, every tab
-  const [askContext, setAskContext] = useState(null)
+  const [askSignal, setAskSignal] = useState(null) // prefill/open the AM chat dock
   const [showPhase2, setShowPhase2] = useState(false)
+  const askSeq = useRef(0)
   const [role, setRole] = useState(PEOPLE[0]) // Steven (full access) by default
 
   const [toasts, setToasts] = useState([])
@@ -50,9 +52,9 @@ export default function App() {
   }
   const handleOpenReport = (reportId) => { setReportContext(reportId); setActive('reports') }
   const handleOpenAskSal = (clientId = null) => {
-    setAskContext(clientId)
-    setAskOpen(true)
-    if (active === 'ask') setActive('portfolio') // scoped asks land in the dock, not the full page
+    askSeq.current += 1
+    const name = clientId ? getClient(clientId)?.name : null
+    setAskSignal({ seq: askSeq.current, text: name ? `How is ${name} doing this cycle?` : 'Which clients need my attention?' })
   }
 
   return (
@@ -71,10 +73,7 @@ export default function App() {
             <AMShell
               active={active}
               onNav={handleNav}
-              askOpen={askOpen}
-              askContext={askContext}
-              onCloseAsk={() => setAskOpen(false)}
-              onReopenAsk={() => setAskOpen(true)}
+              askSignal={askSignal}
               onOpenReport={handleOpenReport}
               onOpenAskSal={handleOpenAskSal}
               reportContext={reportContext}
@@ -140,9 +139,7 @@ function Banner({ onDismiss }) {
 }
 
 /* ---------------- AM shell (v1 tooling, now secondary) ---------------- */
-function AMShell({ active, onNav, askOpen, askContext, onCloseAsk, onReopenAsk, onOpenReport, onOpenAskSal, reportContext, onPhase2, role, setRole, onToast }) {
-  const onAskPage = active === 'ask'
-  const dockVisible = askOpen && !onAskPage
+function AMShell({ active, onNav, askSignal, onOpenReport, onOpenAskSal, reportContext, onPhase2, role, setRole, onToast }) {
   return (
     <div className="flex h-full min-h-0">
       <Sidebar active={active} onNav={onNav} onPhase2={onPhase2} role={role} setRole={setRole} />
@@ -158,23 +155,11 @@ function AMShell({ active, onNav, askOpen, askContext, onCloseAsk, onReopenAsk, 
             {active === 'sources' && <DataSources onToast={onToast} />}
             {active === 'anomalies' && <Anomalies onOpenAskSal={onOpenAskSal} onToast={onToast} />}
             {active === 'signals' && <SignalsFeed onOpenAskSal={onOpenAskSal} onOpenClient={() => onNav('portfolio')} />}
-            {active === 'ask' && <AskSal variant="full" scopedClientId={askContext} />}
           </div>
         </main>
 
-        {/* Persistent right-rail chat, open by default on every tab. */}
-        {dockVisible && <AskSal variant="dock" scopedClientId={askContext} onClose={onCloseAsk} onExpand={() => onNav('ask')} />}
-        {!askOpen && !onAskPage && (
-          <button
-            onClick={onReopenAsk}
-            className="hidden xl:flex flex-col items-center gap-2 w-10 flex-shrink-0 border-l border-hairline bg-muted hover:bg-accent/10 transition-colors py-4 text-ink-3 hover:text-ink"
-            aria-label="Open Ask SAL"
-            title="Ask SAL"
-          >
-            <Sparkles size={16} aria-hidden="true" />
-            <span className="text-[10px] font-semibold uppercase tracking-eyebrow" style={{ writingMode: 'vertical-rl' }}>Ask SAL</span>
-          </button>
-        )}
+        {/* Same Ask SAL drawer as the client view (shared ChatDock). */}
+        <ChatDock section={AM_CHAT} askSignal={askSignal} title="Ask SAL" />
       </div>
     </div>
   )
@@ -198,10 +183,6 @@ function Sidebar({ active, onNav, onPhase2, role, setRole }) {
         <NavGroup label="Signals">
           <NavItem label="Insights" icon={<AlertTriangle size={16} aria-hidden="true" />} active={active === 'anomalies'} onClick={() => onNav('anomalies')} />
           <NavItem label="Anomalies" icon={<Activity size={16} aria-hidden="true" />} active={active === 'signals'} onClick={() => onNav('signals')} />
-        </NavGroup>
-
-        <NavGroup label="SAL">
-          <NavItem label="Ask SAL" icon={<Sparkles size={16} aria-hidden="true" />} active={active === 'ask'} onClick={() => onNav('ask')} />
         </NavGroup>
 
         <NavGroup label="Next">

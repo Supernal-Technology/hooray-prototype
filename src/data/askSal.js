@@ -117,3 +117,17 @@ export const ASK_SAL_PROMPTS = [
 ]
 
 export const getPrompt = (id) => ASK_SAL_PROMPTS.find((p) => p.id === id)
+
+// Cross-client config so the AM view can use the same ChatPanel/ChatDock as the
+// client view (one shared "Ask SAL" drawer style across both audiences).
+export const AM_CHAT = {
+  id: 'portfolio',
+  label: 'the portfolio',
+  overview: {
+    narrative:
+      "I read across every connected client in your book, Google Ads, Meta, GA4, the CRM and programmatic feeds. Ask me which clients are at risk, where a channel is over-performing, how many hours you recovered, or anything about a specific account.",
+    numbers: [],
+    sources: [],
+  },
+  questions: ASK_SAL_PROMPTS.slice(0, 6),
+}

@@ -1,72 +1,91 @@
 import { useState, useEffect, useRef } from 'react'
-import { Send, Sparkles, FileCheck2, Users } from 'lucide-react'
-import { CLIENT_CHAT, answerForPrompt, matchClientAnswer } from '../data/clientChat'
+import { Send, Sparkles, FileCheck2, Users, ChevronDown, X, Maximize2 } from 'lucide-react'
+import { matchSectionAnswer } from '../data/clientReport'
 import Chart from './Chart'
 import TierBadge from './TierBadge'
 
-// "Talk to this data", the client-facing chat. This is the product, not a drawer.
-// Renders SAL answers as narrative + inline chart + sources, with a simulated
-// "Querying the Genome" state so the interaction reads as real. Scoped to one
-// client (Resorts World) via CLIENT_CHAT.
-//
-// `askSignal` ({ seq, promptId?, text? }) lets the report's "Ask SAL about this"
-// affordances pre-fill and submit a question from outside the panel.
-export default function ChatPanel({ askSignal }) {
+// "Talk to this data", the client chat, scoped to the report section in view.
+// Per the Jun-10 call: when a section opens, SAL auto-posts a short overview
+// (SemRush-style), and the suggested questions live in a clean dropdown that
+// swaps with the section. Free text matches within the section, never fabricates.
+export default function ChatPanel({ section, askSignal, title = 'Talk to this data', onCollapse, onExpand }) {
   const [thread, setThread] = useState([])
   const [draft, setDraft] = useState('')
   const [pending, setPending] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const endRef = useRef(null)
-  const seenSeq = useRef(0)
+  const seenSections = useRef(new Set())
+  const seenSignal = useRef(0)
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [thread, pending])
 
+  const post = (msg) => setThread((t) => [...t, msg])
   const ask = (userText, answer) => {
-    setThread((t) => [...t, { role: 'user', text: userText }])
+    post({ role: 'user', text: userText })
     setPending(true)
-    setTimeout(() => {
-      setPending(false)
-      setThread((t) => [...t, { role: 'sal', ...answer }])
-    }, 900)
+    setTimeout(() => { setPending(false); post({ role: 'sal', ...answer }) }, 850)
   }
 
-  const sendPrompt = (p) => { if (!pending) ask(p.label, answerForPrompt(p.id)) }
+  // Auto-overview the first time a section is opened.
+  useEffect(() => {
+    if (!section || seenSections.current.has(section.id)) return
+    seenSections.current.add(section.id)
+    setPending(true)
+    const t = setTimeout(() => {
+      setPending(false)
+      post({ role: 'sal', _overview: section.label, ...section.overview })
+    }, 650)
+    return () => clearTimeout(t)
+  }, [section?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Pre-fill from outside (report affordances).
+  useEffect(() => {
+    if (!askSignal || askSignal.seq === seenSignal.current || !section) return
+    seenSignal.current = askSignal.seq
+    if (pending) return
+    const q = askSignal.promptId && section.questions.find((x) => x.id === askSignal.promptId)
+    if (q) ask(q.label, q.answer)
+    else if (askSignal.text) ask(askSignal.text, matchSectionAnswer(section, askSignal.text))
+  }, [askSignal]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const sendQuestion = (q) => { setMenuOpen(false); if (!pending) ask(q.label, q.answer) }
   const sendFree = () => {
-    if (!draft.trim() || pending) return
+    if (!draft.trim() || pending || !section) return
     const text = draft.trim()
     setDraft('')
-    ask(text, matchClientAnswer(text))
+    ask(text, matchSectionAnswer(section, text))
   }
-
-  // External pre-fill from report affordances.
-  useEffect(() => {
-    if (!askSignal || askSignal.seq === seenSeq.current) return
-    seenSeq.current = askSignal.seq
-    if (pending) return
-    if (askSignal.promptId) {
-      const p = CLIENT_CHAT.prompts.find((x) => x.id === askSignal.promptId)
-      ask(p?.label || askSignal.text || '…', answerForPrompt(askSignal.promptId))
-    } else if (askSignal.text) {
-      ask(askSignal.text, matchClientAnswer(askSignal.text))
-    }
-  }, [askSignal]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex flex-col h-full bg-card">
-      <header className="px-5 py-4 border-b border-hairline">
-        <div className="flex items-center gap-2">
-          <Sparkles size={16} className="text-accent-dark" aria-hidden="true" />
-          <h2 className="text-base font-serif font-semibold text-ink">Talk to this data</h2>
+      <header className="px-5 py-4 border-b border-hairline flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-accent-dark" aria-hidden="true" />
+            <h2 className="text-base font-serif font-semibold text-ink">{title}</h2>
+          </div>
+          <p className="text-[11px] text-ink-3 mt-1 leading-snug">
+            Ask about {section ? <span className="text-ink-2 font-medium">{section.label}</span> : 'your numbers'}. Answers come from your connected sources, always shown.
+          </p>
         </div>
-        <p className="text-[11px] text-ink-3 mt-1 leading-snug">
-          Ask anything about your numbers, answers come from your connected sources only, always shown.
-        </p>
+        <div className="flex items-center gap-1 flex-shrink-0">
+          {onExpand && (
+            <button onClick={onExpand} className="text-ghost hover:text-ink transition-colors" aria-label="Open full screen" title="Full screen">
+              <Maximize2 size={15} aria-hidden="true" />
+            </button>
+          )}
+          {onCollapse && (
+            <button onClick={onCollapse} className="text-ghost hover:text-ink transition-colors" aria-label="Collapse chat" title="Collapse">
+              <X size={18} aria-hidden="true" />
+            </button>
+          )}
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-5 space-y-4">
-        {thread.length === 0 && (
+        {thread.length === 0 && !pending && (
           <div className="text-sm text-ink-2 leading-relaxed max-w-prose">
-            Hi, I'm SAL. I can pull up your paid media, RevPAR, ROAS, and channel spend, and explain
-            anything that moved. Tap a question below or ask in your own words.
+            Hi, I'm SAL. Open a section and I'll give you the read; ask me why a number moved or what to do next.
           </div>
         )}
         {thread.map((m, i) => (m.role === 'user' ? <UserBubble key={i} text={m.text} /> : <SalAnswer key={i} answer={m} />))}
@@ -75,34 +94,49 @@ export default function ChatPanel({ askSignal }) {
             <span className="w-6 h-6 rounded-full bg-accent-pale flex items-center justify-center">
               <Sparkles size={12} className="text-accent-dark" aria-hidden="true" />
             </span>
-            <span className="chat-querying">Querying the Genome…</span>
+            <span className="chat-querying">Reading the section…</span>
           </div>
         )}
         <div ref={endRef} />
       </div>
 
       <div className="border-t border-hairline px-5 py-3 bg-muted">
-        <div className="flex items-center gap-2 flex-wrap mb-3">
-          {CLIENT_CHAT.prompts.map((p) => (
+        {/* Suggested questions, scoped to the section, as a dropdown (per the call). */}
+        {section && (
+          <div className="relative mb-2.5">
             <button
-              key={p.id}
-              onClick={() => sendPrompt(p)}
+              onClick={() => setMenuOpen((v) => !v)}
               disabled={pending}
-              className="text-xs rounded-full border border-hairline bg-card px-3 py-1.5 hover:bg-accent-pale transition-colors text-ink-2 disabled:opacity-50"
+              className="w-full flex items-center justify-between gap-2 text-xs rounded-lg border border-hairline bg-card px-3 py-2 hover:bg-subtle transition-colors text-ink-2 disabled:opacity-50"
+              aria-expanded={menuOpen}
             >
-              {p.label}
+              <span>Suggested questions for {section.label}</span>
+              <ChevronDown size={14} className={`text-ink-3 transition-transform ${menuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
             </button>
-          ))}
-        </div>
+            {menuOpen && (
+              <div className="absolute bottom-full left-0 right-0 mb-1 bg-card border border-hairline-strong rounded-lg shadow-elevated overflow-hidden z-20">
+                {section.questions.map((q) => (
+                  <button
+                    key={q.id}
+                    onClick={() => sendQuestion(q)}
+                    className="w-full text-left px-3 py-2 text-xs text-ink hover:bg-accent-pale transition-colors border-b border-hairline-soft last:border-b-0"
+                  >
+                    {q.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         <form onSubmit={(e) => { e.preventDefault(); sendFree() }} className="flex items-center gap-2">
           <input
             type="text"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             disabled={pending}
-            placeholder="Ask about a metric, channel, or month"
+            placeholder="Ask SAL"
             className="input flex-1 disabled:opacity-60"
-            aria-label="Ask SAL about your data"
+            aria-label="Ask SAL"
           />
           <button type="submit" disabled={!draft.trim() || pending} className="btn-primary text-sm inline-flex items-center gap-1.5 disabled:opacity-50">
             <Send size={14} aria-hidden="true" /> Send
@@ -113,8 +147,6 @@ export default function ChatPanel({ askSignal }) {
   )
 }
 
-// Confidence indicator on SAL's answers (Nick's high/med/low framing).
-// Stays on the ink/accent palette, amber is reserved for warnings, not low confidence.
 function ConfidenceTag({ level }) {
   const meta = {
     high: { label: 'High confidence', bars: 3, color: 'var(--accent-dark)' },
@@ -149,6 +181,7 @@ function SalAnswer({ answer }) {
         <Sparkles size={14} className="text-accent-dark" aria-hidden="true" />
       </div>
       <div className="flex-1 min-w-0">
+        {answer._overview && <div className="eyebrow mb-1">Overview · {answer._overview}</div>}
         <p className="text-sm text-ink-2 leading-relaxed">{answer.narrative}</p>
 
         {answer.confidence && <ConfidenceTag level={answer.confidence} />}
@@ -188,7 +221,7 @@ function SalAnswer({ answer }) {
                   <TierBadge tier={s.tier} />
                   <span className="text-ink-3">·</span>
                   <span className="text-[11px] font-mono text-ink-3">
-                    data as of {s.dataAsOf ? new Date(s.dataAsOf).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'n/a'} · simulated
+                    as of {s.dataAsOf ? new Date(s.dataAsOf).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'n/a'} · simulated
                   </span>
                 </li>
               ))}

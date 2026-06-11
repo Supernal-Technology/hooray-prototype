@@ -7,7 +7,7 @@ import { useReports } from '../state/reportsStore'
 import ClientAvatar from '../components/ClientAvatar'
 import TierBadge from '../components/TierBadge'
 
-// INSIGHTS — the upside. Recommendations and opportunities SAL surfaces to act on
+// INSIGHTS, the upside. Recommendations and opportunities SAL surfaces to act on
 // and grow. Problems (anomalies, missing data) live in the Anomalies feed instead.
 export default function Insights({ onOpenAskSal, onToast }) {
   const [approved, setApproved] = useState({})

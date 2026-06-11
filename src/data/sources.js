@@ -7,14 +7,17 @@ export const PLATFORMS = {
   META: { id: 'meta', name: 'Meta Ads', kind: 'paid', defaultTier: 1 },
   TRADE_DESK: { id: 'trade-desk', name: 'Trade Desk', kind: 'programmatic', defaultTier: 3 },
   REVINATE: { id: 'revinate', name: 'Revinate CRM', kind: 'crm', defaultTier: 2 },
-  CENDYN: { id: 'cendyn', name: 'Cendyn', kind: 'crm', defaultTier: 2 },
   GWS: { id: 'gws', name: 'Google Workspace', kind: 'workspace', defaultTier: 1 },
+  // Prophit (CHM Warnick), revenue/profitability platform. Available to connect
+  // via API/MCP: an integration the Genome can light up for incremental insight.
+  PROPHIT: { id: 'prophit', name: 'Prophit', kind: 'revenue', defaultTier: 2 },
 }
 
-// Status: connected | delegated-pending | csv-manual | csv-missing | disconnected
+// Status: connected | delegated-pending | csv-manual | csv-missing | disconnected | available
 export const SOURCES = [
   // Salamander, full Tier 1 stack
   { clientId: 'salamander', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
+  { clientId: 'salamander', platformId: 'prophit', tier: 2, status: 'available' },
   { clientId: 'salamander', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'salamander', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'salamander', platformId: 'trade-desk', tier: 3, status: 'csv-manual', dataAsOf: '2026-06-04T09:14Z' },
@@ -25,6 +28,7 @@ export const SOURCES = [
   { clientId: 'resorts-world', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'resorts-world', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'resorts-world', platformId: 'trade-desk', tier: 3, status: 'csv-manual', dataAsOf: '2026-06-05T11:02Z' },
+  { clientId: 'resorts-world', platformId: 'prophit', tier: 2, status: 'available' },
 
   // Curator
   { clientId: 'curator', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
@@ -63,12 +67,12 @@ export const SOURCES = [
   { clientId: 'the-guild', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'the-guild', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
 
-  // Mauna Kea, Tier 2 via Revinate + Cendyn
+  // Mauna Kea, Tier 2 via Revinate + Prophit
   { clientId: 'mauna-kea', platformId: 'ga4', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'mauna-kea', platformId: 'gads', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'mauna-kea', platformId: 'meta', tier: 1, status: 'connected', dataAsOf: '2026-06-08T22:00Z' },
   { clientId: 'mauna-kea', platformId: 'revinate', tier: 2, status: 'connected', dataAsOf: '2026-06-08T16:30Z' },
-  { clientId: 'mauna-kea', platformId: 'cendyn', tier: 2, status: 'delegated-pending', dataAsOf: null },
+  { clientId: 'mauna-kea', platformId: 'prophit', tier: 2, status: 'available' },
 ]
 
 export const sourcesForClient = (clientId) => SOURCES.filter((s) => s.clientId === clientId)

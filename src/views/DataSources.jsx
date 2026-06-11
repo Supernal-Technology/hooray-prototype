@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { RefreshCw, AlertTriangle, CheckCircle2, Clock } from 'lucide-react'
+import { RefreshCw, AlertTriangle, CheckCircle2, Clock, Plus } from 'lucide-react'
 import { CLIENTS } from '../data/clients'
 import { SOURCES, PLATFORMS, BULK_SYNC } from '../data/sources'
 import { useReports } from '../state/reportsStore'
@@ -87,7 +87,7 @@ export default function DataSources({ onToast }) {
                   const s = SOURCES.find((x) => x.clientId === c.id && x.platformId === p.id)
                   return (
                     <td key={p.id} className="px-3 py-3 text-center">
-                      {s ? <SourceCell source={s} /> : <span className="text-xs text-ghost">, </span>}
+                      {s ? <SourceCell source={s} /> : <span className="text-xs text-ghost">·</span>}
                     </td>
                   )
                 })}
@@ -110,7 +110,8 @@ function SourceCell({ source }) {
     'delegated-pending': { icon: <Clock size={14} className="text-ink-3" />, label: 'Pending' },
     'csv-manual':        { icon: <CheckCircle2 size={14} className="text-amber" />, label: 'CSV' },
     'csv-missing':       { icon: <AlertTriangle size={14} className="text-amber" />, label: 'Missing' },
-    'disconnected':      { icon: <AlertTriangle size={14} className="text-amber" />, label: ', ' },
+    'disconnected':      { icon: <AlertTriangle size={14} className="text-amber" />, label: 'Off' },
+    'available':         { icon: <Plus size={14} className="text-accent-dark" />, label: 'Connect' },
   }
   const m = map[source.status] ?? { icon: null, label: source.status }
   return (

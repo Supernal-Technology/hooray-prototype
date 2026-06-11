@@ -1,6 +1,6 @@
 // Who's "logged in" for the AM-side view. Drives account-level access scoping:
 // partners see the whole roster; account directors see only their book.
-// All simulated — wired to the "View as" switcher in the sidebar.
+// All simulated, wired to the "View as" switcher in the sidebar.
 
 export const PEOPLE = [
   { id: 'steven', name: 'Steven Seghers', title: 'Partner', scope: 'all' },

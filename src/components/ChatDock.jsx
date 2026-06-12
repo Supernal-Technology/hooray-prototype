@@ -5,9 +5,9 @@ import ChatPanel from './ChatPanel'
 // One shared Ask SAL drawer for BOTH the client and AM views: a collapsible
 // right rail wrapping ChatPanel, plus a full-screen overlay (the immersive
 // "Claude chat" experience) reachable from the drawer's expand control.
-// Open by default; collapses to a slim tab. An incoming askSignal re-opens it.
+// Collapsed by default to a slim tab; an incoming askSignal (or the tab) opens it.
 export default function ChatDock({ section, askSignal, title }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const [full, setFull] = useState(false)
 
   useEffect(() => { if (askSignal) setCollapsed(false) }, [askSignal])

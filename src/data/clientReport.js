@@ -86,7 +86,7 @@ export const CLIENT_REPORT = {
       { q: 'What creative and promotional strategies are running?', stat: 'Rate-integrity positioning',
         a: "The through-line this month was rate integrity: premium, experience-led creative across Search, Social and Display that sells the resort and spa experience rather than leading with discounts. That positioning is what let ADR climb 20% while demand held.", to: 'social' },
       { q: 'What are the next strategic priorities for the quarter?', stat: 'Push brand share toward 80%',
-        a: "Three moves: keep protecting rate while the market is soft, push brand impression share from 73% toward 80% to capture the OTA headroom, and keep scaling the efficient Search and Social campaigns while leaning into the organic and referral momentum.", to: 'summary' },
+        a: "Three moves: keep protecting rate while the market is soft, push brand impression share from 73% toward 80% to capture the OTA headroom, and keep scaling the efficient Search and Social campaigns while leaning into the organic and referral momentum.", to: 'planning' },
     ],
     questions: [
       { id: 'd-how', label: 'How are we doing this month?', answer: { confidence: 'high', narrative: "Solid given the market. Volume is down YoY across sessions and bookings, but a 20% higher ADR and a strong ~5:1 blended RoAS are sustaining revenue, and low-cost organic/referral are growing their share. The full read is in your May recap.", numbers: [k('ADR', '$389', '+20%'), k('Blended RoAS', '5.1:1', '')], sources: [SRC.ga4, SRC.gads] } },
@@ -100,7 +100,7 @@ export const CLIENT_REPORT = {
     {
       id: 'summary',
       label: 'Summary',
-      eyebrow: 'Month-end recap · Web & media overview',
+      eyebrow: 'Executive summary',
       lede:
         "May sustained demand in a softer market. Increased media investment expanded reach and visibility, holding a strong blended RoAS while a higher average rate offset lower booking volume. Organic and referral grew their share of revenue.",
       takeaways: [
@@ -131,6 +131,47 @@ export const CLIENT_REPORT = {
         { id: 's-headline', label: 'Give me the headline for ownership', answer: { confidence: 'high', narrative: "In a softer market, the resort sustained demand and protected rate. ADR rose 20% to $389 and paid media returned a blended ~5:1, so revenue held within 9% of last year despite a ~23% drop in booking volume. We chose rate integrity over discounting, and low-cost organic/referral grew their share.", numbers: [k('Revenue', '$179.9K', '-8.8%'), k('ADR', '$389', '+20%')], sources: [SRC.ga4, SRC.gads] } },
         { id: 's-why', label: 'Why did volume drop?', answer: { confidence: 'high', narrative: "A softer travel market this cycle pulled sessions and availability checks down year over year. Rather than discount to defend volume, the strategy held rate, which is why ADR climbed 20% and revenue stayed close to last year on fewer, higher-value bookings.", numbers: [k('Sessions', '46.2K', '-20%'), k('Bookings', '270', '-23%')], sources: [SRC.ga4] } },
         { id: 's-next', label: 'What should we do next month?', answer: { confidence: 'medium', narrative: "Keep protecting ADR, sustain the prospecting spend that's expanding reach, and hold brand impression share in paid search at 70-80% to fend off OTAs. Watch room-night volume into summer, if it keeps softening, test a targeted length-of-stay offer rather than an across-the-board discount.", numbers: [], sources: [SRC.gads, SRC.meta] } },
+      ],
+    },
+
+    /* ===== PLANNING & NEXT STEPS (deck chapter 01) ===== */
+    {
+      id: 'planning',
+      label: 'Next Steps',
+      eyebrow: 'Planning & next steps',
+      lede:
+        "What's in flight for the resort over the next 30, 60 and 90 days, plus where SAL recommends focusing given how May performed.",
+      // The agency's planned initiatives, straight from the deck's 30-60-90 page.
+      roadmap: [
+        { window: '30 Days', items: [
+          { title: 'Phase 2 AEO/GEO', status: 'Finalizing' },
+          { title: 'Next photoshoot planning', status: 'In progress' },
+        ] },
+        { window: '60 Days', items: [
+          { title: 'Phase 3 AEO/GEO', status: 'Pending' },
+          { title: 'Next photoshoot delivery', status: 'Scheduled' },
+        ] },
+        { window: '90 Days', items: [
+          { title: 'Q3 ad refresh', status: 'Planned' },
+          { title: 'Summer campaign concepting', status: 'TBD' },
+        ] },
+      ],
+      // SAL's recommended focus, layered on top of the agency plan.
+      salFocus: [
+        'Keep protecting rate while the market is soft instead of discounting to chase volume.',
+        'Push brand impression share from 73% toward 80% to capture the OTA headroom in paid search.',
+        'Keep scaling the efficient Search and Social campaigns, and lean into the organic and referral momentum.',
+      ],
+      overview: {
+        narrative:
+          "The plan is built around momentum, not correction. The agency is finalizing Phase 2 AEO/GEO (getting the property surfaced in AI and answer engines), planning the next photoshoot, and lining up a Q3 ad refresh. My read: the May numbers say keep doing what's working, protect rate, push brand impression share toward 80%, and scale the Search and Social campaigns that beat benchmark.",
+        numbers: [k('Brand impression share', '73%', 'target 80%'), k('Blended RoAS', '5.1:1', '')],
+        sources: [SRC.gads, SRC.meta],
+      },
+      questions: [
+        { id: 'pl-quarter', label: "What's the plan for the next quarter?", answer: { confidence: 'high', narrative: "Three waves. Next 30 days: finalize Phase 2 AEO/GEO and plan the next photoshoot. 60 days: Phase 3 AEO/GEO and photoshoot delivery. 90 days: a Q3 ad refresh and summer campaign concepting. The through-line is sustaining demand and visibility rather than reacting to the softer market.", numbers: [], sources: [SRC.gads] } },
+        { id: 'pl-aeo', label: "What is Phase 2 AEO/GEO?", answer: { confidence: 'high', narrative: "AEO/GEO is answer-engine and generative-engine optimization, making sure the resort shows up when people ask AI assistants and search engines questions like \"best wine country resort near Temecula.\" Phase 2 is finalizing that setup; Phase 3 extends it. It's the organic-visibility complement to the paid spend.", numbers: [], sources: [SRC.ga4] } },
+        { id: 'pl-focus', label: 'Where should we focus budget next?', answer: { confidence: 'medium', narrative: "Lean into what beat benchmark. Search (499% RoAS) and Social (575%) are the workhorses, so protect and scale those. Use the brand impression-share headroom (73% toward 80%) to box out the OTAs, and keep funding the prospecting that's lifting organic and referral. I'd hold Display flat, it's a small high-intent support role.", numbers: [k('Search RoAS', '499%', ''), k('Social RoAS', '575%', '')], sources: [SRC.gads, SRC.meta] } },
       ],
     },
 

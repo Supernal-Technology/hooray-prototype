@@ -2,9 +2,8 @@ import { useEffect } from 'react'
 import { X, Lock, ArrowRight } from 'lucide-react'
 
 const STEPS = [
-  { num: 1, title: 'Richer signal', body: 'SAL reads news, weather, and economic context, plus sources like the Smith Travel Report, so it can explain the why behind a number. "Traffic’s down because of the World Cup," not just "traffic’s down."' },
-  { num: 2, title: 'Deeper strategy', body: 'Beyond surfacing what moved, SAL recommends the next move to improve conversion and revenue, going three and four levels deep instead of two. The golden egg: strategy, not just reporting.' },
-  { num: 3, title: 'In your clients’ hands', body: 'Clients get their own access to talk to their data and act on it, with Pulse quantifying the account-team hours saved. Your AMs move from writing reports to strategy.' },
+  { num: 1, title: 'Build the Client View', body: 'We give each hotel access to their own branded dashboard: live KPIs, their signed-off monthly recap, and the ability to ask SAL about their own numbers, scoped to their account. Self-serve for clients, and your AMs move from writing reports to strategy.' },
+  { num: 2, title: 'Richer signal', body: 'SAL reads news, weather, and economic context, plus sources like the Smith Travel Report, so it can explain the why behind a number. "Traffic’s down because of the World Cup," not just "traffic’s down."' },
 ]
 
 export default function Phase2Modal({ onClose }) {

@@ -9,7 +9,7 @@ export const PEOPLE = [
     id: 'tracey',
     name: 'Tracey McRae',
     title: 'Account Director',
-    scope: ['salamander', 'resorts-world', 'curator', 'aqua-aston', 'marcus-pfister'],
+    scope: ['south-coast-winery', 'salamander', 'resorts-world', 'curator', 'aqua-aston', 'marcus-pfister'],
   },
   {
     id: 'rocio',

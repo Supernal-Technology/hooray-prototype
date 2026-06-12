@@ -21,6 +21,19 @@ export const ACCOUNT_MANAGERS = [
 
 export const CLIENTS = [
   {
+    id: 'south-coast-winery',
+    name: 'South Coast Winery',
+    collection: 'Resort & Spa · Temecula',
+    sector: 'hospitality',
+    properties: ['South Coast Winery Resort & Spa'],
+    amId: 'am-rachel',
+    tier: 1,
+    compliance: 'cleared',
+    activeSince: '2024-01',
+    baseline: { roas: 5.1, cpc: 0.93, occupancy: 0.68, revpar: 425, adr: 389 },
+    contextNote: 'Hero reporting account. Demand held on rate strategy; brand impression share has ~7pts of headroom.',
+  },
+  {
     id: 'salamander',
     name: 'Salamander Collection',
     collection: 'Salamander Hotels & Resorts',

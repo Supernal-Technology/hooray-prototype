@@ -8,7 +8,13 @@ import { useReports } from '../state/reportsStore'
 import StatusPill from '../components/StatusPill'
 import TierBadge from '../components/TierBadge'
 import ClientAvatar from '../components/ClientAvatar'
-import ReportArticle from '../components/ReportArticle'
+import { CLIENT_REPORT } from '../data/clientReport'
+import { SectionView, ReportTabBar } from '../components/RichReport'
+
+// The rich monthly report the AM reviews is the same one the client sees. We have
+// one fully-built recap (South Coast Winery); the AM view renders it under the
+// selected client's name. [SIM] per-client report data is future work.
+const RICH = CLIENT_REPORT
 
 const getSignal = (id) => SIGNALS.find((s) => s.id === id)
 
@@ -257,6 +263,9 @@ function ReportDocument({ report, state, client, onSignOff, onSendBack, onSaveEd
   const [showNotes, setShowNotes] = useState(false)
   const [noteText, setNoteText] = useState('')
 
+  const [tabId, setTabId] = useState('summary')
+  const section = RICH.sections.find((s) => s.id === tabId) || RICH.sections[0]
+
   const saveEdits = () => { onSaveEdits(edits); setEditMode(false) }
   const submitNotes = () => {
     if (!noteText.trim()) return
@@ -312,17 +321,13 @@ function ReportDocument({ report, state, client, onSignOff, onSendBack, onSaveEd
         )}
       </div>
 
-      {/* Shared editorial report body (AM mode: editable reads + thumbs training) */}
-      <ReportArticle
-        report={report}
-        client={client}
-        mode="am"
-        state={state}
-        editMode={editMode}
-        edits={edits}
-        onEditChange={(platformId, val) => setEdits((d) => ({ ...d, [platformId]: val }))}
-        onFeedback={onFeedback}
-      />
+      {/* Rich report body, the same recap the client sees, with the selected client's byline */}
+      <div className="max-w-[760px] mx-auto">
+        <div className="eyebrow">Monthly recap · Web &amp; media overview</div>
+        <div className="text-sm font-medium text-ink mt-0.5 mb-4">{client.name} · {RICH.period}</div>
+        <ReportTabBar sections={RICH.sections} tabId={tabId} setTabId={setTabId} className="mb-10" />
+        <SectionView key={tabId} section={section} period={RICH.period} footer={`Drafted by SAL · pending your sign-off · simulated data.`} />
+      </div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { LayoutDashboard, FileText, History, ChevronDown, Hotel, CheckCircle2, A
 import { CLIENT_REPORT } from '../data/clientReport'
 import Chart from '../components/Chart'
 import ChatDock from '../components/ChatDock'
+import { KpiGrid, SectionView } from '../components/RichReport'
 
 // CLIENT VIEW, the hero. The client opens their portal: a left nav (Dashboard /
 // Reports / History) mirroring the AM shell, the active content in the middle,
@@ -26,6 +27,7 @@ const HISTORY_CHAT = {
   ],
 }
 const DASH_CHAT = { id: 'dashboard', label: 'your live data', overview: R.dashboard.overview, questions: R.dashboard.questions }
+
 
 export default function ClientView({ onToast }) {
   const [view, setView] = useState('report')
@@ -90,55 +92,6 @@ function NavItem({ label, icon, active, onClick }) {
 }
 
 /* ---------------- Shared bits ---------------- */
-function KpiTile({ label, value, delta, good }) {
-  return (
-    <div className="card p-4">
-      <p className="eyebrow leading-tight">{label}</p>
-      <div className="mt-2 font-serif font-medium text-ink text-[26px] leading-none tracking-tight">{value}</div>
-      {delta && <p className={`text-[11px] mt-1.5 font-medium ${good ? 'text-accent-dark' : 'text-amber-text'}`}>{delta}</p>}
-    </div>
-  )
-}
-
-function KpiGrid({ kpis }) {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {kpis.map((m) => <KpiTile key={m.label} {...m} />)}
-    </div>
-  )
-}
-
-function DataTable({ table }) {
-  const al = (a) => (a === 'right' ? 'text-right' : 'text-left')
-  return (
-    <div className="card overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="bg-subtle text-[11px] uppercase tracking-wide font-semibold text-ink-3">
-            {table.columns.map((c) => <th key={c.key} className={`px-4 py-2.5 ${al(c.align)}`}>{c.label}</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {table.rows.map((r, i) => (
-            <tr key={i} className="border-t border-hairline-soft">
-              {table.columns.map((c, j) => (
-                <td key={c.key} className={`px-4 py-2.5 ${al(c.align)} ${j === 0 ? 'font-medium text-ink' : 'text-ink-3 font-mono text-[13px]'}`}>{r[c.key]}</td>
-              ))}
-            </tr>
-          ))}
-          {table.total && (
-            <tr className="border-t border-hairline bg-subtle/50">
-              {table.columns.map((c, j) => (
-                <td key={c.key} className={`px-4 py-2.5 ${al(c.align)} font-semibold ${j === 0 ? 'text-ink' : 'text-ink-2 font-mono text-[13px]'}`}>{table.total[c.key]}</td>
-              ))}
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 /* ---------------- Dashboard (live) ---------------- */
 function Dashboard({ onOpenReport }) {
   const D = R.dashboard
@@ -254,7 +207,7 @@ function MonthlyReport({ tabId, setTabId, onToast, onAskAbout }) {
       </div>
 
       <div className="px-8 pt-5 border-b border-hairline sticky top-[61px] bg-page z-10">
-        <div className="max-w-6xl mx-auto flex items-center gap-1 -mb-px overflow-x-auto">
+        <div className="max-w-6xl mx-auto flex items-end gap-1 -mb-px overflow-x-auto">
           {R.sections.map((s) => (
             <button key={s.id} onClick={() => setTabId(s.id)} className={`px-3.5 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${s.id === tabId ? 'border-accent-dark text-ink' : 'border-transparent text-ink-3 hover:text-ink'}`}>{s.label}</button>
           ))}
@@ -263,136 +216,13 @@ function MonthlyReport({ tabId, setTabId, onToast, onAskAbout }) {
 
       <div className="px-8 py-8">
         <div className="max-w-6xl mx-auto">
-          <SectionView key={tabId} section={section} onAskAbout={onAskAbout} />
+          <SectionView key={tabId} section={section} period={R.period} onAskAbout={onAskAbout} />
         </div>
       </div>
     </div>
   )
 }
 
-function SectionView({ section, onAskAbout }) {
-  const [period, setPeriod] = useState('month')
-  const hasYtd = !!section.ytd
-  const view = period === 'ytd' && section.ytd ? section.ytd : section.month
-  const isSummary = section.id === 'summary'
-
-  return (
-    <article className="space-y-7">
-      <header>
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <div className="eyebrow">{section.eyebrow}</div>
-            <h2 className="text-2xl font-serif font-medium tracking-tight text-ink mt-1.5">{section.label}</h2>
-          </div>
-          {hasYtd && (
-            <div className="flex items-center gap-1 rounded-lg bg-muted p-0.5 mt-1">
-              <PeriodBtn active={period === 'month'} onClick={() => setPeriod('month')}>This month</PeriodBtn>
-              <PeriodBtn active={period === 'ytd'} onClick={() => setPeriod('ytd')}>Year to date</PeriodBtn>
-            </div>
-          )}
-        </div>
-        <div className="h-1 w-14 rounded-full bg-accent mt-3" aria-hidden="true" />
-        <p className="text-lg font-serif text-ink-2 leading-relaxed mt-4 max-w-prose">{section.lede}</p>
-        {section.budget && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-3">
-            <span><span className="text-ink-2 font-medium">Budget</span> {section.budget.gross} gross · {section.budget.net} net</span>
-            <span><span className="text-ink-2 font-medium">Campaigns</span> {section.budget.campaigns}</span>
-          </div>
-        )}
-      </header>
-
-      {/* Key takeaways, the "what it means", front and center */}
-      <section>
-        <h3 className="eyebrow mb-2">Key takeaways</h3>
-        <div className="grid sm:grid-cols-2 gap-2.5">
-          {section.takeaways.map((t, i) => (
-            <div key={i} className="rounded-card border border-hairline bg-card p-3.5">
-              <div className="flex items-center gap-1.5 text-sm font-medium text-ink mb-1">
-                <CheckCircle2 size={14} className="text-accent-dark flex-shrink-0" aria-hidden="true" /> {t.title}
-              </div>
-              <p className="text-[13px] text-ink-2 leading-relaxed">{t.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {isSummary && section.recommendation && (
-        <section className="rounded-card border border-accent bg-accent-pale p-4">
-          <div className="eyebrow mb-1">What we recommend</div>
-          <p className="text-sm text-ink-2 leading-relaxed">{section.recommendation}</p>
-        </section>
-      )}
-
-      {/* The numbers */}
-      {view.kpis && (
-        <section>
-          <h3 className="eyebrow mb-3">The numbers{hasYtd ? ` · ${period === 'ytd' ? 'year to date' : R.period}` : ''} <span className="text-ghost font-normal normal-case tracking-normal">· vs last year</span></h3>
-          <KpiGrid kpis={view.kpis} />
-        </section>
-      )}
-
-      {/* Charts */}
-      {view.charts?.length > 0 && (
-        <section className={`grid ${view.charts.length > 1 ? 'md:grid-cols-2' : ''} gap-4`}>
-          {view.charts.map((c, i) => (
-            <div key={i} className="rounded-card border border-hairline bg-card p-4">
-              <div className="eyebrow mb-2.5">{c.title}</div>
-              <Chart spec={c.spec} />
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* Table */}
-      {view.table && (
-        <section>
-          <h3 className="eyebrow mb-2">{view.table.title}</h3>
-          <DataTable table={view.table} />
-        </section>
-      )}
-
-      {/* Campaign breakdown (social) */}
-      {view.campaigns?.length > 0 && (
-        <section>
-          <h3 className="eyebrow mb-2">Campaign breakdown</h3>
-          <div className="space-y-1.5">
-            {view.campaigns.map((c, i) => (
-              <div key={i} className="rounded-lg border border-hairline bg-card px-3.5 py-2.5 flex items-center justify-between gap-3">
-                <span className="text-sm font-medium text-ink">{c.name}</span>
-                <span className="text-[11px] font-mono text-ink-3">{c.detail}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Benchmarks */}
-      {section.benchmarks?.length > 0 && (
-        <section>
-          <h3 className="eyebrow mb-2">Benchmarks</h3>
-          <ul className="text-[12px] text-ink-3 space-y-1">
-            {section.benchmarks.map((b, i) => <li key={i} className="font-mono">· {b}</li>)}
-          </ul>
-        </section>
-      )}
-
-      <div className="border-t border-hairline pt-3 flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-[11px] text-ink-3">Prepared by SAL · reviewed and approved by your Hooray account director · simulated data.</p>
-        {onAskAbout && (
-          <button onClick={() => onAskAbout({ promptId: section.questions?.[0]?.id })} className="text-[11px] font-medium text-accent-dark hover:underline inline-flex items-center gap-1">
-            <MessageCircle size={11} aria-hidden="true" /> Ask SAL about this section
-          </button>
-        )}
-      </div>
-    </article>
-  )
-}
-
-function PeriodBtn({ active, onClick, children }) {
-  return (
-    <button onClick={onClick} className={`text-[11px] font-medium px-2.5 py-1 rounded-md transition-colors ${active ? 'bg-accent-dark text-cream' : 'text-ink-3 hover:text-ink'}`}>{children}</button>
-  )
-}
 
 /* ---------------- History ---------------- */
 function ReportHistory({ onToast }) {

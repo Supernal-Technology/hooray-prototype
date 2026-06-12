@@ -8,6 +8,28 @@ export const REPORT_STATUS = ['drafting', 'ready_for_review', 'in_review', 'sign
 
 export const REPORTS = [
   {
+    id: 'rep-south-coast-winery-2026-05',
+    clientId: 'south-coast-winery',
+    period: '2026-05',
+    status: 'ready_for_review',
+    draftedAt: '2026-06-02T08:00Z',
+    targetDeliveryAt: '2026-06-03T17:00Z',
+    onTimeTarget: '2026-06-03',
+    sectionsSummary: 'Demand held in a softer market on rate strategy. Blended ~5:1, every paid channel beat benchmark.',
+    overview: {
+      narrative: 'In a softer market, South Coast Winery protected rate over volume. ADR rose 20% to $389 and paid media returned ~5:1, so revenue held within 9% of last year despite booking volume down ~23%.',
+      kpis: [
+        { label: 'Total revenue', value: '$179.9K', deltaMoM: '-3%', vsBaseline: '-9%' },
+        { label: 'Blended RoAS', value: '5.1x', deltaMoM: '+2%', vsBaseline: '+0%' },
+        { label: 'ADR', value: '$389', deltaMoM: '+5%', vsBaseline: '+20%' },
+        { label: 'Bookings', value: '270', deltaMoM: '-6%', vsBaseline: '-23%' },
+      ],
+    },
+    platforms: [],
+    trends: [],
+    recommendations: [],
+  },
+  {
     id: 'rep-salamander-2026-05',
     clientId: 'salamander',
     period: '2026-05',

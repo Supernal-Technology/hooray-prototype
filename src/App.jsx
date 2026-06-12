@@ -27,7 +27,7 @@ import { PEOPLE, scopeCount } from './data/people'
 
 export default function App() {
   // Two audiences, one interface. Client view is the hero and the default.
-  const [mode, setMode] = useState('client') // 'client' | 'am'
+  const [mode, setMode] = useState('am') // 'client' | 'am'
   const [bannerOpen, setBannerOpen] = useState(true)
 
   // AM-shell state (preserved across mode toggles, both shells stay mounted).
